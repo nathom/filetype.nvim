@@ -8,6 +8,7 @@ function getlines(i, j)
     end
     return s
 end
+
 M.extensions = {
     [".ch"] = "chill",
     ["4gh"] = "fgl",
@@ -885,52 +886,76 @@ M.complex = {
     ["rndc.*%.key"] = "named",
 }
 
--- fix multiple glob regexes
+-- These require a special set_ft function
 M.star_sets = {
-    [".*/etc/Muttrc%.d/.*"] = "muttrc",
-    [".*/etc/proftpd/.*%.conf.*,.*/etc/proftpd/conf%..*/.*"] = "apachestyle",
-    ["proftpd%.conf.*"] = "apachestyle",
-    ["access%.conf.*,apache%.conf.*,apache2%.conf.*,httpd%.conf.*,srm%.conf.*"] = "apache",
-    [".*/etc/apache2/.*%.conf.*,.*/etc/apache2/conf%..*/.*,.*/etc/apache2/mods-.*/.*,.*/etc/apache2/sites-.*/.*,.*/etc/httpd/conf%.d/.*%.conf.*"] = "apache",
-    [".*asterisk/.*%.conf.*"] = "asterisk",
-    [".*asterisk.*/.*voicemail%.conf.*"] = "asteriskvm",
-    [".*/named/db%..*,.*/bind/db%..*"] = "bindzone",
-    ["cabal%.project%..*"] = "cabalproject",
-    ["crontab,crontab%..*,.*/etc/cron%.d/.*"] = "crontab",
-    [".*/etc/dnsmasq%.d/.*"] = "dnsmasq",
-    ["drac%..*"] = "dracula",
-    [".*/%.fvwm/.*"] = "fvwm",
-    [".*/tmp/lltmp.*"] = "gedcom",
-    [".*/%.gitconfig%.d/.*,/etc/gitconfig%.d/.*"] = "gitconfig",
-    [".*/gitolite-admin/conf/.*"] = "gitolite",
-    ["%.gtkrc.*,gtkrc.*"] = "gtkrc",
-    ["Prl.*%..*,JAM.*%..*"] = "jam",
-    [".*%.properties_??_??_.*"] = "jproperties",
-    ["Kconfig%..*"] = "kconfig",
-    ["lilo%.conf.*"] = "lilo",
-    [".*/etc/logcheck/.*%.d.*/.*"] = "logcheck",
-    ["[mM]akefile.*"] = "make",
-    ["[rR]akefile.*"] = "ruby",
-    ["reportbug-.*"] = "mail",
-    [".*/etc/modprobe%..*"] = "modconf",
-    ["%.mutt{ng,}rc.*,.*/%.mutt{ng,}/mutt{ng,}rc.*"] = "muttrc",
-    ["mutt{ng,}rc.*,Mutt{ng,}rc.*"] = "muttrc",
-    ["%.neomuttrc.*,.*/%.neomutt/neomuttrc.*"] = "neomuttrc",
-    ["neomuttrc.*,Neomuttrc.*"] = "neomuttrc",
-    ["tmac%..*"] = "nroff",
-    ["/etc/hostname%..*"] = "config",
-    [".*/etc/pam%.d/.*"] = "pamconf",
-    ["%.reminders.*"] = "remind",
-    ["sgml%.catalog.*"] = "catalog",
-    [".*%.vhdl_[0-9].*"] = "vhdl",
-    [".*vimrc.*"] = "vim",
-    ["Xresources.*,.*/app-defaults/.*,.*/Xresources/.*"] = "xdefaults",
-    [".*xmodmap.*"] = "xmodmap",
-    [".*/etc/xinetd%.d/.*"] = "xinetd",
-    [".*/etc/yum%.repos%.d/.*"] = "dosini",
-    ["%.zsh.*,%.zlog.*,%.zcompdump.*"] = "zsh",
-    ["zsh.*,zlog.*"] = "zsh",
+    [".*/etc/Muttrc%.d/.*"] = [[muttrc]],
+    [".*/etc/proftpd/.*%.conf.*"] = [[apachestyle]],
+    [".*/etc/proftpd/conf%..*/.*"] = [[apachestyle]],
+    ["proftpd%.conf.*"] = [[apachestyle]],
+    ["access%.conf.*"] = [[apache]],
+    ["apache%.conf.*"] = [[apache]],
+    ["apache2%.conf.*"] = [[apache]],
+    ["httpd%.conf.*"] = [[apache]],
+    ["srm%.conf.*"] = [[apache]],
+    [".*/etc/apache2/.*%.conf.*"] = [[apache]],
+    [".*/etc/apache2/conf%..*/.*"] = [[apache]],
+    [".*/etc/apache2/mods-.*/.*"] = [[apache]],
+    [".*/etc/apache2/sites-.*/.*"] = [[apache]],
+    [".*/etc/httpd/conf%.d/.*%.conf.*"] = [[apache]],
+    [".*asterisk/.*%.conf.*"] = [[asterisk]],
+    [".*asterisk.*/.*voicemail%.conf.*"] = [[asteriskvm]],
+    [".*/named/db%..*"] = [[bindzone]],
+    [".*/bind/db%..*"] = [[bindzone]],
+    ["cabal%.project%..*"] = [[cabalproject]],
+    ["crontab"] = [[crontab]],
+    ["crontab%..*"] = [[crontab]],
+    [".*/etc/cron%.d/.*"] = [[crontab]],
+    [".*/etc/dnsmasq%.d/.*"] = [[dnsmasq]],
+    ["drac%..*"] = [[dracula]],
+    [".*/%.fvwm/.*"] = [[fvwm]],
+    [".*/tmp/lltmp.*"] = [[gedcom]],
+    [".*/%.gitconfig%.d/.*"] = [[gitconfig]],
+    ["/etc/gitconfig%.d/.*"] = [[gitconfig]],
+    [".*/gitolite-admin/conf/.*"] = [[gitolite]],
+    ["%.gtkrc.*"] = [[gtkrc]],
+    ["gtkrc.*"] = [[gtkrc]],
+    ["Prl.*%..*"] = [[jam]],
+    ["JAM.*%..*"] = [[jam]],
+    [".*%.properties_??_??_.*"] = [[jproperties]],
+    ["Kconfig%..*"] = [[kconfig]],
+    ["lilo%.conf.*"] = [[lilo]],
+    [".*/etc/logcheck/.*%.d.*/.*"] = [[logcheck]],
+    ["[mM]akefile.*"] = [[make]],
+    ["[rR]akefile.*"] = [[ruby]],
+    ["reportbug-.*"] = [[mail]],
+    [".*/etc/modprobe%..*"] = [[modconf]],
+    ["%.mutt{ng,}rc.*"] = [[muttrc]],
+    [".*/%.mutt{ng,}/mutt{ng,}rc.*"] = [[muttrc]],
+    ["mutt{ng,}rc.*,Mutt{ng,}rc.*"] = [[muttrc]],
+    ["%.neomuttrc.*"] = [[neomuttrc]],
+    [".*/%.neomutt/neomuttrc.*"] = [[neomuttrc]],
+    ["neomuttrc.*"] = [[neomuttrc]],
+    ["Neomuttrc.*"] = [[neomuttrc]],
+    ["tmac%..*"] = [[nroff]],
+    ["/etc/hostname%..*"] = [[config]],
+    [".*/etc/pam%.d/.*"] = [[pamconf]],
+    ["%.reminders.*"] = [[remind]],
+    ["sgml%.catalog.*"] = [[catalog]],
+    [".*%.vhdl_[0-9].*"] = [[vhdl]],
+    [".*vimrc.*"] = [[vim]],
+    ["Xresources.*"] = [[xdefaults]],
+    [".*/app-defaults/.*"] = [[xdefaults]],
+    [".*/Xresources/.*"] = [[xdefaults]],
+    [".*xmodmap.*"] = [[xmodmap]],
+    [".*/etc/xinetd%.d/.*"] = [[xinetd]],
+    [".*/etc/yum%.repos%.d/.*"] = [[dosini]],
+    ["%.zsh.*"] = [[zsh]],
+    ["%.zlog.*"] = [[zsh]],
+    ["%.zcompdump.*"] = [[zsh]],
+    ["zsh.*"] = [[zsh]],
+    ["zlog.*"] = [[zsh]],
 }
+
 M.function_extensions = {
     ["ms"] = function()
         vim.cmd([[if !dist#ft#FTnroff() | setf xmath | endif]])
@@ -1414,71 +1439,71 @@ M.function_simple = {
         end
     end,
     ["indent.pro"] = function()
-        vim.cmd([[dist#ft#ProtoCheck('indent')]])
+        vim.cmd([[call dist#ft#ProtoCheck('indent')]])
     end,
     [".bashrc"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["bashrc"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["bash.bashrc"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["PKGBUILD"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["APKBUILD"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     [".kshrc"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("ksh")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("ksh")]])
     end,
     [".profile"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH(getline(1))]])
+        vim.cmd([[call dist#ft#SetFileTypeSH(getline(1))]])
     end,
     [".tcshrc"] = function()
-        vim.cmd([[dist#ft#SetFileTypeShell("tcsh")]])
+        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
     end,
     ["tcsh.tcshrc"] = function()
-        vim.cmd([[dist#ft#SetFileTypeShell("tcsh")]])
+        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
     end,
     ["tcsh.login"] = function()
-        vim.cmd([[dist#ft#SetFileTypeShell("tcsh")]])
+        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
     end,
     [".login"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
     [".cshrc"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
     ["csh.cshrc"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
     ["csh.login"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
     ["csh.logout"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
     [".alias"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
     [".d"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
 }
--- NEEDS TO BE CONVERTED TO LUA REGEX
+
 M.function_complex = {
-    ["*/xorg.conf.d/*.conf"] = function()
+    [".*/xorg%.conf%.d/.*%.conf"] = function()
         vim.b.xf86conf_xfree86_version = 4
         return "xf86conf"
     end,
-    ["*printcap"] = function()
+    [".*printcap"] = function()
         vim.b.ptcap_type = "print"
         return "ptcap"
     end,
-    ["*termcap"] = function()
+    [".*termcap"] = function()
         vim.b.ptcap_type = "term"
         return "ptcap"
     end,
@@ -1489,40 +1514,40 @@ M.function_complex = {
             return "changelog"
         end
     end,
-    [".bashrc*"] = function()
+    ["%.bashrc.*"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
-    [".bash[_-]profile"] = function()
+    ["%.bash[_-]profile"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
-    [".bash[_-]logout"] = function()
+    ["%.bash[_-]logout"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
-    [".bash[_-]aliases"] = function()
+    ["%.bash[_-]aliases"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
-    [".bash-fc[_-]"] = function()
+    ["%.bash-fc[_-]"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
-    ["PKGBUILD*"] = function()
+    ["PKGBUILD.*"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
-    ["APKBUILD*"] = function()
+    ["APKBUILD.*"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
-    [".kshrc*"] = function()
+    ["%.kshrc.*"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("ksh")]])
     end,
-    [".profile*"] = function()
+    ["%.profile.*"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH(getline(1))]])
     end,
-    [".tcshrc*"] = function()
+    ["%.tcshrc.*"] = function()
         vim.cmd([[dist#ft#SetFileTypeShell("tcsh")]])
     end,
-    [".login*"] = function()
+    ["%.login.*"] = function()
         vim.cmd([[dist#ft#CSH()]])
     end,
-    [".cshrc*"] = function()
+    ["%.cshrc.*"] = function()
         vim.cmd([[dist#ft#CSH()]])
     end,
 }
