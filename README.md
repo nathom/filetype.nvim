@@ -37,7 +37,7 @@ As you can see, `filetype.vim` is by far the heaviest nvim runtime file
 ```
 
 `filetype.nvim` fixes the issue by only creating a single autocommand that resolves the filetype
-when a buffer is opened. This method is ~450x faster!
+when a buffer is opened. This method is ~175x faster\*!
 
 
 ## Usage
@@ -247,3 +247,6 @@ Average startup time (100 rounds): **26.492 ms**
   045.676  000.298: BufEnter autocommands
 + 045.679  000.003: editing files in windows
   ```
+</details>
+
+\* The time it takes to source the file goes from 9.1 ms to (0.022 + 0.03) ms, which is a 175x speedup.
