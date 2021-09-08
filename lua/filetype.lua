@@ -6,18 +6,18 @@ loaded_filetype = false
 local M = {}
 function M.resolve()
     -- Relative path
-    local filename = vim.fn.expand("%")
-    if filename == "" then
+    local relative_path = vim.fn.expand("%")
+    if relative_path == "" then
         return
     end
 
     -- Indices of extension
-    local i, j = filename:find("%.%w+$")
+    local i, j = relative_path:find("%.%w+$")
 
     -- Text of extension
     local extension
     if i ~= nil then
-        extension = filename:sub(i + 1, j)
+        extension = relative_path:sub(i + 1, j)
     end
 
     -- We first check the ones that only require a table lookup
@@ -37,6 +37,8 @@ function M.resolve()
     end
 
     -- Lookup filename (for files like .vimrc or .bashrc)
+    local filename = relative_path:gsub(".*%/", "")
+
     try_literal(filename, mapping.literal)
     if loaded_filetype then
         return
@@ -50,7 +52,7 @@ function M.resolve()
     local abs_path = vim.fn.expand("%:p")
 
     -- I left the endswith table separate in case there is an optimization to
-    -- deal with that better. For now, im just using regexes
+    -- deal with that better. For now, I'm just using regex
     try_regex(abs_path, mapping.endswith)
     if loaded_filetype then
         return

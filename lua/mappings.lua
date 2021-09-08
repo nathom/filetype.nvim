@@ -192,7 +192,6 @@ M.extensions = {
     ["gdmo"] = "gdmo",
     ["ged"] = "gedcom",
     ["gemspec"] = "ruby",
-    ["git/config"] = "gitconfig",
     ["go"] = "go",
     ["gp"] = "gp",
     ["gpi"] = "gnuplot",
@@ -853,6 +852,7 @@ M.endswith = {
 
 M.complex = {
     [".*%.git/modules/.*/config"] = "gitconfig",
+    [".*git/config"] = "gitconfig",
     [".*/%.config/systemd/user/.*%.d/.*%.conf"] = "systemd",
     [".*/%.config/upstart/.*%.conf"] = "upstart",
     [".*/%.config/upstart/.*%.override"] = "upstart",
