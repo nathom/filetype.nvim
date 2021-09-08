@@ -1,0 +1,81 @@
+
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.008  000.008: --- NVIM STARTING ---
+000.789  000.782: locale set
+001.315  000.525: inits 1
+001.337  000.022: window checked
+001.342  000.005: parsing arguments
+001.583  000.241: expanding arguments
+001.666  000.083: inits 2
+002.109  000.443: init highlight
+002.113  000.003: waiting for UI
+004.472  002.359: done waiting for UI
+004.487  000.016: initialized screen early for UI
+015.551  001.031  001.031: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/vim-gruvbox8/colors/gruvbox8.vim
+015.680  010.716  009.685: sourcing /Users/nathan/.config/nvim/init.lua
+015.705  000.502: sourcing vimrc file(s)
+015.862  000.026  000.026: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/filetype.vim
+016.516  000.054  000.054: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/ftplugin.vim
+017.070  000.047  000.047: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/indent.vim
+018.835  000.274  000.274: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/syntax/syncolor.vim
+020.024  001.836  001.562: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/vim-gruvbox8/colors/gruvbox8.vim
+020.107  002.325  000.489: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/syntax/synload.vim
+020.203  002.566  000.241: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/syntax/syntax.vim
+023.972  000.027  000.027: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/gzip.vim
+024.065  000.021  000.021: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/health.vim
+024.157  000.020  000.020: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/man.vim
+024.253  000.022  000.022: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/matchit.vim
+024.349  000.025  000.025: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/matchparen.vim
+024.450  000.028  000.028: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/netrwPlugin.vim
+024.786  000.016  000.016: sourcing /Users/nathan/.local/share/nvim/rplugin.vim
+024.796  000.277  000.260: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/rplugin.vim
+024.886  000.021  000.021: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/shada.vim
+024.994  000.034  000.034: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/spellfile.vim
+025.100  000.029  000.029: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/tarPlugin.vim
+025.201  000.024  000.024: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/tohtml.vim
+025.305  000.033  000.033: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/tutor.vim
+025.409  000.030  000.030: sourcing /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/zipPlugin.vim
+033.339  000.030  000.030: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/opt/vim-markdown/ftdetect/markdown.vim
+033.350  007.488  007.459: sourcing /Users/nathan/.config/nvim/plugin/packer_compiled.lua
+034.194  007.716: loading plugins
+034.841  000.032  000.032: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/easy-replace.nvim/plugin/easy_replace.vim
+035.410  000.020  000.020: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/filetype.nvim/plugin/filetype.vim
+035.981  000.030  000.030: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-bqf/plugin/bqf.vim
+038.388  002.050  002.050: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/plugin/nvim-treesitter.vim
+039.080  000.041  000.041: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/elixir.vim
+039.175  000.028  000.028: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/fish.vim
+039.260  000.026  000.026: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/gdresource.vim
+039.338  000.019  000.019: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/gdscript.vim
+039.466  000.022  000.022: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/gomod.vim
+039.552  000.029  000.029: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/graphql.vim
+039.644  000.031  000.031: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/hcl.vim
+039.735  000.024  000.024: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/heex.vim
+039.813  000.022  000.022: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/json5.vim
+039.893  000.024  000.024: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/julia.vim
+039.981  000.031  000.031: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/ledger.vim
+040.062  000.025  000.025: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/nix.vim
+040.157  000.034  000.034: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/ql.vim
+040.253  000.034  000.034: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/query.vim
+040.346  000.027  000.027: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/surface.vim
+040.434  000.025  000.025: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/teal.vim
+040.522  000.025  000.025: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/tlaplus.vim
+040.613  000.028  000.028: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/yang.vim
+040.702  000.026  000.026: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-treesitter/ftdetect/zig.vim
+041.124  000.051  000.051: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/nvim-web-devicons/plugin/nvim-web-devicons.vim
+041.700  000.044  000.044: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/plenary.nvim/plugin/plenary.vim
+042.882  000.194  000.194: sourcing /Users/nathan/.local/share/nvim/site/pack/packer/start/vim-rooter/plugin/rooter.vim
+043.222  006.084: loading packages
+043.790  000.567: loading after plugins
+043.800  000.010: inits 3
+045.708  001.908: opening buffers
+047.236  001.528: BufEnter autocommands
+047.239  000.003: editing files in windows
+047.391  000.152: VimEnter autocommands
+047.394  000.003: UIEnter autocommands
+047.396  000.002: before starting main loop
+047.752  000.356: first screen update
+047.755  000.004: --- NVIM STARTED ---
