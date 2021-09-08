@@ -108,6 +108,7 @@ if vim.g.ft_ignore_pat == nil then
     vim.g.ft_ignore_pat = [[\.\(Z\|gz\|bz2\|zip\|tgz\)$]]
 end
 local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
+
 function star_set_filetype(name)
     if not ft_ignore_regex:match_str(name) then
         set_filetype(name)
