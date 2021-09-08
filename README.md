@@ -64,7 +64,7 @@ That's it! You should now have a much snappier neovim experience!
 
 ### Without `filetype.nvim`:
 
-Average startup time: **36.410 ms**
+Average startup time (100 rounds): **36.410 ms**
 
 <details>
 <summary>Sample log</summary>
@@ -167,7 +167,7 @@ Average startup time: **36.410 ms**
 
 ### With `filetype.nvim`
 
-Average startup time: **26.492 ms**
+Average startup time (100 rounds): **26.492 ms**
 
 <details>
   <summary>Sample log</summary>
