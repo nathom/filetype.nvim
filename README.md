@@ -245,5 +245,5 @@ Average startup time (100 rounds): **26.492 ms**
   043.554  000.011: clearing screen
   045.378  001.823: opening buffers
   045.676  000.298: BufEnter autocommands
-  045.679  000.003: editing files in windows
++ 045.679  000.003: editing files in windows
   ```
