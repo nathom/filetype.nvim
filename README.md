@@ -69,7 +69,7 @@ Average startup time: **36.410 ms**
 <details>
 <summary>Sample log</summary>
   
-  ```
+  ```diff
   times in msec
    clock   self+sourced   self:  sourced script
    clock   elapsed:              other lines
