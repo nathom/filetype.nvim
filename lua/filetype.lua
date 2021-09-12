@@ -5,6 +5,9 @@ loaded_filetype = false
 
 local M = {}
 function M.resolve()
+    -- Just in case
+    vim.g.did_load_filetypes = 1
+
     -- Relative path
     local relative_path = vim.fn.expand("%")
     if relative_path == "" then
@@ -71,8 +74,9 @@ function M.resolve()
         return
     end
 
-    -- Just in case
-    vim.g.did_load_filetypes = 1
+    -- At this point, no filetype has been detected
+    -- so let's just default to the extension name
+    vim.o.filetype = extension
 end
 
 -- TODO: change so that the extension isnt being calculated over
