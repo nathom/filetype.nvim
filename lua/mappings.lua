@@ -634,6 +634,7 @@ M.extensions = {
     ["zut"] = "zimbutempl",
 }
 M.literal = {
+    ["Brewfile"] = 'ruby',
     [".a2psrc"] = "a2ps",
     [".asoundrc"] = "alsaconf",
     [".cdrdao"] = "cdrdaoconf",
@@ -851,6 +852,7 @@ M.endswith = {
 }
 
 M.complex = {
+    ["%.tmux.*%.conf"] = "tmux",
     [".*%.git/modules/.*/config"] = "gitconfig",
     [".*git/config"] = "gitconfig",
     [".*/%.config/systemd/user/.*%.d/.*%.conf"] = "systemd",
