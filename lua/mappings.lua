@@ -298,6 +298,7 @@ M.extensions = {
     ["lte"] = "latte",
     ["ltx"] = "tex",
     ["lua"] = "lua",
+    ["lock"] = "toml",
     ["m2"] = "modula2",
     ["m4gl"] = "fgl",
     ["man"] = "nroff",
@@ -634,7 +635,7 @@ M.extensions = {
     ["zut"] = "zimbutempl",
 }
 M.literal = {
-    ["Brewfile"] = 'ruby',
+    ["Brewfile"] = "ruby",
     [".a2psrc"] = "a2ps",
     [".asoundrc"] = "alsaconf",
     [".cdrdao"] = "cdrdaoconf",
