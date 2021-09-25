@@ -1,3 +1,5 @@
+"""This is the script I used to automatically convert most of the vim autocommands into lua."""
+
 import pprint
 import re
 
