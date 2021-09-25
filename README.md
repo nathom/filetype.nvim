@@ -249,4 +249,4 @@ Average startup time (100 rounds): **26.492 ms**
   ```
 </details>
 
-\* The time it takes to source the file goes from 9.1 ms to (0.022 + 0.03) ms, which is a 175x speedup.
+\* The time my machine takes to source the file goes from 9.1 ms to (0.022 + 0.03) ms, which is a 175x speedup.
