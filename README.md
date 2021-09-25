@@ -8,7 +8,7 @@ Easily speed up your neovim startup time!
 This plugin is a replacement for the included `filetype.vim` that is sourced on startup.
 The purpose of that file is to create a series of autocommands that set the `filetype` variable
 depending on the filename. The issue is that creating autocommands have significant overhead, and
-creating [800+ of them](misc/filetype.vim) as `filetype.vim` does is a very inefficient way to get the job done.
+creating [800+ of them](https://github.com/vim/vim/blob/master/runtime/filetype.vim) as `filetype.vim` does is a very inefficient way to get the job done.
 
 As you can see, `filetype.vim` is by far the heaviest nvim runtime file
 
