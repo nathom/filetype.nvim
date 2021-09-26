@@ -39,8 +39,6 @@ local function try_regex(abs_path, map, star_set)
     end
 end
 
--- TODO: change so that the extension isnt being calculated over
--- and over again
 local function try_extensions(extension, map)
     local filetype = map[extension]
     if filetype ~= nil then
