@@ -1,6 +1,6 @@
 local M = {}
 
-function getlines(i, j)
+local function getlines(i, j)
     local getline = vim.fn.getline
     local s = getline(i)
     for k = i + 1, j do
@@ -964,7 +964,7 @@ M.function_extensions = {
         vim.cmd([[if !dist#ft#FTnroff() | setf xmath | endif]])
     end,
     ["xpm"] = function()
-        if getline(1):find("XPM2") then
+        if vim.fn.getline(1):find("XPM2") then
             return "xpm2"
         else
             return "xpm"
