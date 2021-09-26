@@ -1,7 +1,59 @@
 -- generate the filetype
-mapping = require("mappings")
+local mapping = require("mappings")
 
-loaded_filetype = false
+local loaded_filetype = false
+
+local function set_filetype(name)
+    if type(name) == "string" then
+        vim.o.filetype = name
+        loaded_filetype = true
+    elseif type(name) == "function" then
+        local result = name()
+        if type(result) == "string" then
+            vim.o.filetype = result
+            loaded_filetype = true
+        end
+    end
+end
+
+if vim.g.ft_ignore_pat == nil then
+    vim.g.ft_ignore_pat = [[\.\(Z\|gz\|bz2\|zip\|tgz\)$]]
+end
+local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
+
+local function star_set_filetype(name)
+    if not ft_ignore_regex:match_str(name) then
+        set_filetype(name)
+    end
+end
+
+local function try_regex(abs_path, map, star_set)
+    for regexp, ft in pairs(map) do
+        if abs_path:find(regexp) then
+            if star_set then
+                star_set_filetype(ft)
+            else
+                set_filetype(ft)
+            end
+        end
+    end
+end
+
+-- TODO: change so that the extension isnt being calculated over
+-- and over again
+local function try_extensions(extension, map)
+    local filetype = map[extension]
+    if filetype ~= nil then
+        set_filetype(filetype)
+    end
+end
+
+local function try_literal(filename, map)
+    local literal_match = map[filename]
+    if literal_match ~= nil then
+        set_filetype(literal_match)
+    end
+end
 
 local M = {}
 function M.resolve()
@@ -77,59 +129,6 @@ function M.resolve()
     -- At this point, no filetype has been detected
     -- so let's just default to the extension name
     vim.o.filetype = extension
-end
-
--- TODO: change so that the extension isnt being calculated over
--- and over again
-function try_extensions(extension, map)
-    local filetype = map[extension]
-    if filetype ~= nil then
-        set_filetype(filetype)
-    end
-end
-
-function try_literal(filename, map)
-    local literal_match = map[filename]
-    if literal_match ~= nil then
-        set_filetype(literal_match)
-    end
-end
-
-function set_filetype(name)
-    if type(name) == "string" then
-        vim.o.filetype = name
-        loaded_filetype = true
-    elseif type(name) == "function" then
-        local result = name()
-        if type(result) == "string" then
-            vim.o.filetype = result
-            loaded_filetype = true
-        end
-    end
-end
-
-if vim.g.ft_ignore_pat == nil then
-    vim.g.ft_ignore_pat = [[\.\(Z\|gz\|bz2\|zip\|tgz\)$]]
-end
-local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
-
-function star_set_filetype(name)
-    if not ft_ignore_regex:match_str(name) then
-        set_filetype(name)
-    else
-    end
-end
-
-function try_regex(abs_path, map, star_set)
-    for regexp, ft in pairs(map) do
-        if abs_path:find(regexp) then
-            if star_set then
-                star_set_filetype(ft)
-            else
-                set_filetype(ft)
-            end
-        end
-    end
 end
 
 return M
