@@ -5,12 +5,13 @@ local loaded_filetype = false
 
 local function set_filetype(name)
     if type(name) == "string" then
-        vim.o.filetype = name
+        -- vim.o.filetype = name
+        vim.cmd("setf " .. name)
         loaded_filetype = true
     elseif type(name) == "function" then
         local result = name()
         if type(result) == "string" then
-            vim.o.filetype = result
+            vim.cmd("setf " .. result)
             loaded_filetype = true
         end
     end
@@ -126,7 +127,11 @@ function M.resolve()
 
     -- At this point, no filetype has been detected
     -- so let's just default to the extension name
-    vim.o.filetype = extension
+    if extension then
+        vim.cmd("setf " .. extension)
+    else -- There is no extension
+        vim.cmd("setf FALLBACK")
+    end
 end
 
 return M
