@@ -1,5 +1,5 @@
 -- generate the filetype
-mapping = require("mappings")
+mapping = require("mappings_filetype")
 
 loaded_filetype = false
 
