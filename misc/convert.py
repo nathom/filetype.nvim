@@ -1,4 +1,8 @@
-"""This is the script I used to automatically convert most of the vim autocommands into lua."""
+"""This is the script I used to automatically convert most of the vim autocommands into lua.
+
+Warning: This is crappy code. Please don't use this for anything! I only included this file
+in case anyone was curious how I made the plugin.
+"""
 
 import pprint
 import re
