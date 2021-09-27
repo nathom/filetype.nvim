@@ -1143,7 +1143,7 @@ M.function_extensions = {
         end
     end,
     ["prg"] = function()
-        if vim.fn.exists("g:filetype_prg") then
+        if vim.fn.exists("g:filetype_prg") == 1 then
             return vim.g.filetype_prg
         else
             return "clipper"
@@ -1183,14 +1183,14 @@ M.function_extensions = {
         end
     end,
     ["cc"] = function()
-        if vim.fn.exists("cynlib_syntax_for_cc") then
+        if vim.fn.exists("cynlib_syntax_for_cc") == 1 then
             return "cynlib"
         else
             return "cpp"
         end
     end,
     ["cpp"] = function()
-        if vim.fn.exists("cynlib_syntax_for_cpp") then
+        if vim.fn.exists("cynlib_syntax_for_cpp") == 1 then
             return "cynlib"
         else
             return "cpp"
