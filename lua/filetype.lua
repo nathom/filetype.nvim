@@ -1,20 +1,19 @@
 -- generate the filetype
 local mapping = require("mappings")
 
-local loaded_filetype = false
-
 local function set_filetype(name)
     if type(name) == "string" then
         -- vim.o.filetype = name
         vim.cmd("setf " .. name)
-        loaded_filetype = true
+        return true
     elseif type(name) == "function" then
         local result = name()
         if type(result) == "string" then
             vim.cmd("setf " .. result)
-            loaded_filetype = true
+            return true
         end
     end
+    return false
 end
 
 if vim.g.ft_ignore_pat == nil then
@@ -24,34 +23,39 @@ local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
 
 local function star_set_filetype(name)
     if not ft_ignore_regex:match_str(name) then
-        set_filetype(name)
+        return set_filetype(name)
     end
+    return false
 end
 
 local function try_regex(abs_path, map, star_set)
+    local loaded_filetype = false
     for regexp, ft in pairs(map) do
         if abs_path:find(regexp) then
             if star_set then
-                star_set_filetype(ft)
+                loaded_filetype = star_set_filetype(ft) or loaded_filetype
             else
-                set_filetype(ft)
+                loaded_filetype = set_filetype(ft) or loaded_filetype
             end
         end
     end
+    return loaded_filetype
 end
 
 local function try_extensions(extension, map)
     local filetype = map[extension]
     if filetype ~= nil then
-        set_filetype(filetype)
+        return set_filetype(filetype)
     end
+    return false
 end
 
 local function try_literal(filename, map)
     local literal_match = map[filename]
     if literal_match ~= nil then
-        set_filetype(literal_match)
+        return set_filetype(literal_match)
     end
+    return false
 end
 
 local M = {}
@@ -79,13 +83,11 @@ function M.resolve()
 
     -- Lookup file extension
     if extension ~= nil then
-        try_extensions(extension, mapping.extensions)
-        if loaded_filetype then
+        if try_extensions(extension, mapping.extensions) then
             return
         end
 
-        try_extensions(extension, mapping.function_extensions)
-        if loaded_filetype then
+        if try_extensions(extension, mapping.function_extensions) then
             return
         end
     end
@@ -93,12 +95,10 @@ function M.resolve()
     -- Lookup filename (for files like .vimrc or .bashrc)
     local filename = relative_path:gsub(".*%/", "")
 
-    try_literal(filename, mapping.literal)
-    if loaded_filetype then
+    if try_literal(filename, mapping.literal) then
         return
     end
-    try_literal(filename, mapping.function_simple)
-    if loaded_filetype then
+    if try_literal(filename, mapping.function_simple) then
         return
     end
 
@@ -107,21 +107,18 @@ function M.resolve()
 
     -- I left the endswith table separate in case there is an optimization to
     -- deal with that better. For now, I'm just using regex
-    try_regex(abs_path, mapping.endswith)
-    if loaded_filetype then
+    if try_regex(abs_path, mapping.endswith) then
         return
     end
 
-    try_regex(abs_path, mapping.complex)
-    if loaded_filetype then
+    if try_regex(abs_path, mapping.complex) then
         return
     end
 
     -- These require the use of a special function that excludes
     -- certain filetypes from being binded to autocommands
     -- using g:ft_ignore_pat
-    try_regex(abs_path, mapping.star_sets, true)
-    if loaded_filetype then
+    if try_regex(abs_path, mapping.star_sets, true) then
         return
     end
 
