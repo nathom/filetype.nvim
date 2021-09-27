@@ -175,6 +175,7 @@ M.extensions = {
     ["fdr"] = "csp",
     ["feature"] = "cucumber",
     ["fex"] = "focexec",
+    ["fnl"] = "fennel",
     ["focexec"] = "focexec",
     ["for"] = "fortran",
     ["fortran"] = "fortran",
