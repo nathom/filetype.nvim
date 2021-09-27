@@ -103,6 +103,8 @@ function M.resolve()
     end
 
     -- Finally, we check the ones that require regexes
+    -- try_regex is relatively slow because it has to iterate through
+    -- the key-value pairs and run a regex for each one
     local abs_path = vim.fn.expand("%:p")
 
     -- I left the endswith table separate in case there is an optimization to
