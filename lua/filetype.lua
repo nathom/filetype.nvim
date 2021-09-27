@@ -1,15 +1,18 @@
 -- generate the filetype
 local mapping = require("mappings")
 
+local function setf(filetype)
+    vim.cmd("setf " .. filetype)
+end
+
 local function set_filetype(name)
     if type(name) == "string" then
-        -- vim.o.filetype = name
-        vim.cmd("setf " .. name)
+        setf(name)
         return true
     elseif type(name) == "function" then
         local result = name()
         if type(result) == "string" then
-            vim.cmd("setf " .. result)
+            setf(name)
             return true
         end
     end
@@ -127,9 +130,9 @@ function M.resolve()
     -- At this point, no filetype has been detected
     -- so let's just default to the extension name
     if extension then
-        vim.cmd("setf " .. extension)
+        setf(extension)
     else -- There is no extension
-        vim.cmd("setf FALLBACK")
+        setf("FALLBACK")
     end
 end
 
