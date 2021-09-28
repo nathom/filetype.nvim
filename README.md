@@ -13,7 +13,7 @@ creating [800+ of them](https://github.com/vim/vim/blob/master/runtime/filetype.
 As you can see, `filetype.vim` is by far the heaviest nvim runtime file
 
 ```diff
-13.782    [runtime] >
+13.782    [runtime] 
 -	9.144     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/filetype.vim
 	1.662     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/matchit.vim
 	0.459     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/syntax/synload.vim
@@ -33,7 +33,6 @@ As you can see, `filetype.vim` is by far the heaviest nvim runtime file
 	0.039     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/spellfile.vim
 	0.038     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/tutor.vim
 	0.022     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/health.vim
-<
 ```
 
 `filetype.nvim` fixes the issue by only creating a single autocommand that resolves the filetype
