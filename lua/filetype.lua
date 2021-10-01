@@ -12,7 +12,7 @@ local function set_filetype(name)
     elseif type(name) == "function" then
         local result = name()
         if type(result) == "string" then
-            setf(name)
+            setf(result)
             return true
         end
     end
