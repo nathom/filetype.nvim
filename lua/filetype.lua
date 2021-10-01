@@ -131,8 +131,6 @@ function M.resolve()
     -- so let's just default to the extension name
     if extension then
         setf(extension)
-    else -- There is no extension
-        setf("FALLBACK")
     end
 end
 
