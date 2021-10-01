@@ -1,18 +1,14 @@
 -- generate the filetype
-local mapping = require("mappings")
-
-local function setf(filetype)
-    vim.cmd("setf " .. filetype)
-end
+local map = require("filetype.mappings")
 
 local function set_filetype(name)
     if type(name) == "string" then
-        setf(name)
+        vim.bo.filetype = name
         return true
     elseif type(name) == "function" then
-        local result = name()
-        if type(result) == "string" then
-            setf(name)
+        local n = name()
+        if type(n) == "string" then
+            vim.bo.filetype = n
             return true
         end
     end
@@ -31,34 +27,30 @@ local function star_set_filetype(name)
     return false
 end
 
-local function try_regex(abs_path, map, star_set)
-    local loaded_filetype = false
-    for regexp, ft in pairs(map) do
+local function try_regex(abs_path, maps, star_set)
+    local ok = false
+    for regexp, ft in pairs(maps) do
         if abs_path:find(regexp) then
             if star_set then
-                loaded_filetype = star_set_filetype(ft) or loaded_filetype
+                ok = star_set_filetype(ft)
             else
-                loaded_filetype = set_filetype(ft) or loaded_filetype
+                ok = set_filetype(ft)
+            end
+            if ok then
+                return true
             end
         end
     end
-    return loaded_filetype
-end
-
-local function try_extensions(extension, map)
-    local filetype = map[extension]
-    if filetype ~= nil then
-        return set_filetype(filetype)
-    end
     return false
 end
 
-local function try_literal(filename, map)
-    local literal_match = map[filename]
-    if literal_match ~= nil then
-        return set_filetype(literal_match)
+local analyze_shebang = function()
+    local fstline = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
+    if vim.startswith(fstline, "#!/usr/bin/env ") then
+        return fstline:sub(16)
+    elseif vim.startswith(fstline, "#!") then
+        return fstline:match(".*/(%w+)$")
     end
-    return false
 end
 
 local M = {}
@@ -66,43 +58,33 @@ function M.resolve()
     -- Just in case
     vim.g.did_load_filetypes = 1
 
-    -- Relative path
-    local relative_path = vim.fn.expand("%")
-    if relative_path == "" then
+    -- filetype
+    local filetype
+
+    -- filename
+    local filename = vim.fn.expand("%:t")
+    if filename == "" then
         return
     end
 
-    -- Indices of extension
-    local i, j = relative_path:find("%.%w+$")
-
-    -- Text of extension
-    local extension
-    if i ~= nil then
-        extension = relative_path:sub(i + 1, j)
-    end
+    -- extension
+    local ext = filename:match("%.(%w+)$")
 
     -- We first check the ones that only require a table lookup
     -- because they're the fastest
 
     -- Lookup file extension
-    if extension ~= nil then
-        if try_extensions(extension, mapping.extensions) then
-            return
-        end
-
-        if try_extensions(extension, mapping.function_extensions) then
+    if ext then
+        filetype = map.extensions[ext] or map.function_extensions[ext]
+        if filetype then
+            set_filetype(filetype)
             return
         end
     end
 
-    -- Lookup filename (for files like .vimrc or .bashrc)
-    local filename = relative_path:gsub(".*%/", "")
-
-    if try_literal(filename, mapping.literal) then
-        return
-    end
-    if try_literal(filename, mapping.function_simple) then
-        return
+    local literal = map.literal[filename] or map.function_simple[filename]
+    if literal then
+        set_filetype(literal)
     end
 
     -- Finally, we check the ones that require regexes
@@ -112,27 +94,25 @@ function M.resolve()
 
     -- I left the endswith table separate in case there is an optimization to
     -- deal with that better. For now, I'm just using regex
-    if try_regex(abs_path, mapping.endswith) then
+    if try_regex(abs_path, map.endswith) then
         return
     end
 
-    if try_regex(abs_path, mapping.complex) then
+    if try_regex(abs_path, map.complex) then
         return
     end
 
     -- These require the use of a special function that excludes
     -- certain filetypes from being binded to autocommands
     -- using g:ft_ignore_pat
-    if try_regex(abs_path, mapping.star_sets, true) then
+    if try_regex(abs_path, map.star_sets, true) then
         return
     end
 
     -- At this point, no filetype has been detected
     -- so let's just default to the extension name
-    if extension then
-        setf(extension)
-    else -- There is no extension
-        setf("FALLBACK")
+    if ext then
+        set_filetype(ext)
     end
 end
 
