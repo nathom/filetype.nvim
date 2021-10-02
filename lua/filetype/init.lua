@@ -46,11 +46,7 @@ end
 
 local analyze_shebang = function()
     local fstline = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
-    if vim.startswith(fstline, "#!/usr/bin/env ") then
-        return fstline:sub(16)
-    elseif vim.startswith(fstline, "#!") then
-        return fstline:match(".*/(%w+)$")
-    end
+    return fstline:match("#!%s*/usr/bin/env%s+(%a+)$") or fstline:match("#!%s*/.*/(%a+)$")
 end
 
 local M = {}

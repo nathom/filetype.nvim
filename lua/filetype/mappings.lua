@@ -1564,7 +1564,17 @@ M.function_complex = {
 }
 
 M.shebang = {
-    ["bash"] = "sh"
+    ["ash"] = "sh",
+    ["bash"] = "sh",
+    ["csh"] = "sh",
+    ["dash"] = "sh",
+    ["ksh"] = "sh",
+    ["mksh"] = "sh",
+    ["pdksh"] = "sh",
+    ["tcsh"] = "sh",
+    ["yash"] = "sh",
+    ["node"] = "javascript",
 }
+-- sh, zsh and fish are not necessary because the filetype is also the same.
 
 return M
