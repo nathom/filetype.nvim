@@ -56,8 +56,14 @@ end
 
 local M = {}
 
-function M.setup(opts) 
-    -- Dummy for now
+function M.setup(opts)
+    if opts.overrides then
+        for table_name, table in pairs(opts.overrides) do
+            for filename, filetype in pairs(table) do
+                map[table_name][filename] = filetype
+            end
+        end
+    end
 end
 
 function M.resolve()
