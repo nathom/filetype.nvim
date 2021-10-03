@@ -710,6 +710,7 @@ M.literal = {
     ["Neomuttrc"] = "neomuttrc",
     ["Pipfile"] = "config",
     ["Pipfile.lock"] = "json",
+    ["Podfile"] = "ruby",
     ["Puppetfile"] = "ruby",
     ["README"] = "text",
     ["SConstruct"] = "python",
