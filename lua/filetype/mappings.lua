@@ -10,7 +10,7 @@ local function getlines(i, j)
 end
 
 M.extensions = {
-    [".ch"] = "chill",
+    ["ch"] = "chill",
     ["4gh"] = "fgl",
     ["4gl"] = "fgl",
     ["8th"] = "8th",

@@ -118,4 +118,12 @@ function M.resolve()
     end
 end
 
+function M.override(opts)
+    for name, t in pairs(opts) do
+        for k, v in pairs(t) do
+            map[name][k] = v
+        end
+    end
+end
+
 return M

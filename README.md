@@ -54,8 +54,25 @@ Then, add the following to `init.lua`
 vim.g.did_load_filetypes = 1
 ```
 
+Do not write it in the packer.nvim setup/config.
+
 That's it! You should now have a much snappier neovim experience!
 
+## How to override default values
+
+If you set it like this, `filetype` of `*.bash` will be recognized as `sh`.
+
+```lua
+require("filetype").override({
+  extensions = {
+    ["bash"] = "sh"
+  }
+})
+```
+
+Add the default value if it does not exist, or overwrite it if it does.
+
+The keys that exist are `extensions`, `literal`, `endswith`, `complex`, `star_sets`, `function_extensions`, `function_simple`, `function_complex` and `shebang`.
 
 ## Performance Comparison
 
