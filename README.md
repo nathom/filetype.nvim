@@ -35,13 +35,13 @@ As you can see, `filetype.vim` is by far the heaviest nvim runtime file
 	0.022     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/health.vim
 ```
 
-`filetype.nvim` fixes the issue by only creating a single autocommand that resolves the filetype
+`filetype.nvim` fixes the issue by only creating a single autocommand that resolves the file type
 when a buffer is opened. This method is ~175x faster\*!
 
 
 ## Usage
 
-First, install using your favorite package manager
+First, install using your favorite package manager. Using [packer](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use("nathom/filetype.nvim")
@@ -56,6 +56,49 @@ vim.g.did_load_filetypes = 1
 
 That's it! You should now have a much snappier neovim experience!
 
+## Customization
+
+`filetype.nvim` allows you to easily add custom filetypes using the `setup` function. Here's an example:
+
+```lua
+-- In init.lua or filetype.nvim's config file
+require('filetype').setup({
+    overrides = {
+        extensions = {
+            -- Set the filetype of *.pn files to potion
+            pn = 'potion'
+        },
+        literal = {
+            -- Set the filetype of files named "MyBackupFile" to lua
+            MyBackupFile = 'lua',
+        },
+        complex = {
+            -- Set the filetype of any full filename matching the regex to gitconfig
+            [".*git/config"] = "gitconfig",  -- Included in the plugin
+        },
+
+        -- The same as the ones above except the keys map to functions
+        function_extensions = {
+            py = function() 
+                print('opening a python file!!!')
+                vim.bo.filetype = 'python'
+            end
+        },
+        function_literal = {
+            Brewfile = function() 
+                vim.cmd("syntax off")
+            end
+        },
+        function_complex = {
+        },
+    }
+})
+```
+
+The `extensions` and `literal` tables are orders faster than the other ones
+because they only require a table lookup. Always try to use these before resorting
+to the `complex` tables, which require looping over the entries and running
+a regex for each one.
 
 ## Performance Comparison
 
