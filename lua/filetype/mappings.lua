@@ -1563,4 +1563,8 @@ M.function_complex = {
     end,
 }
 
+M.shebang = {
+    ["bash"] = "sh"
+}
+
 return M
