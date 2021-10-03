@@ -44,7 +44,7 @@ local function try_regex(abs_path, maps, star_set)
     return false
 end
 
-local analyze_shebang = function()
+local function analyze_shebang()
     local fstline = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
     if vim.startswith(fstline, "#!/usr/bin/env ") then
         return fstline:sub(16)
@@ -53,7 +53,13 @@ local analyze_shebang = function()
     end
 end
 
+
 local M = {}
+
+function M.setup(opts) 
+    -- Dummy for now
+end
+
 function M.resolve()
     -- Just in case
     vim.g.did_load_filetypes = 1
@@ -82,7 +88,7 @@ function M.resolve()
         end
     end
 
-    local literal = map.literal[filename] or map.function_simple[filename]
+    local literal = map.literal[filename] or map.function_literal[filename]
     if literal then
         set_filetype(literal)
     end
