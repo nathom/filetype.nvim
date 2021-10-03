@@ -53,7 +53,6 @@ local function analyze_shebang()
     end
 end
 
-
 local M = {}
 
 function M.setup(opts)
@@ -125,12 +124,14 @@ function M.resolve()
     -- so let's just default to the extension name
     if ext then
         set_filetype(ext)
-    else
-        local shebang = analyze_shebang()
-        if shebang then
-            shebang = map.shebang[shebang] or shebang
-            set_filetype(shebang)
-        end
+        return
+    end
+
+    -- Try to find the shebang and set filetype
+    local shebang = analyze_shebang()
+    if shebang then
+        shebang = map.shebang[shebang] or shebang
+        set_filetype(shebang)
     end
 end
 
