@@ -643,6 +643,7 @@ M.extensions = {
     ["zut"] = "zimbutempl",
 }
 M.literal = {
+    ["Appfile"] = "ruby",
     ["Brewfile"] = "ruby",
     [".a2psrc"] = "a2ps",
     [".asoundrc"] = "alsaconf",
@@ -703,6 +704,7 @@ M.literal = {
     ["COMMIT_EDITMSG"] = "gitcommit",
     ["Containerfile"] = "dockerfile",
     ["Dockerfile"] = "dockerfile",
+    ["Fastfile"] = "ruby",
     ["Gemfile"] = "ruby",
     ["Kconfig"] = "kconfig",
     ["Kconfig.debug"] = "kconfig",
