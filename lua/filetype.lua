@@ -24,6 +24,7 @@ if vim.g.ft_ignore_pat == nil then
 end
 local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
 
+-- The function name comes from filetype.vim; not sure what it means
 local function star_set_filetype(name)
     if not ft_ignore_regex:match_str(name) then
         return set_filetype(name)
@@ -62,6 +63,7 @@ local function try_literal(filename, map)
 end
 
 local M = {}
+
 function M.resolve()
     -- Just in case
     vim.g.did_load_filetypes = 1
@@ -101,7 +103,7 @@ function M.resolve()
     if try_literal(filename, mapping.literal) then
         return
     end
-    if try_literal(filename, mapping.function_simple) then
+    if try_literal(filename, mapping.function_literal) then
         return
     end
 
@@ -131,8 +133,18 @@ function M.resolve()
     -- so let's just default to the extension name
     if extension then
         setf(extension)
-    else -- There is no extension
-        setf("FALLBACK")
+        -- else -- There is no extension
+        --     setf("FALLBACK")
+    end
+end
+
+function M.setup(opts)
+    -- Loop over type tables, such as extensions
+    for table, items in pairs(opts) do
+        -- Loop over items in type table and set them into the global mapping table
+        for key, val in pairs(items) do
+            mapping[table][key] = val
+        end
     end
 end
 

@@ -1406,7 +1406,7 @@ M.function_extensions = {
         vim.cmd([[call dist#ft#SQL()]])
     end,
 }
-M.function_simple = {
+M.function_literal = {
     ["xorg.conf-4"] = function()
         vim.b.xf86conf_xfree86_version = 4
         return "xf86conf"
