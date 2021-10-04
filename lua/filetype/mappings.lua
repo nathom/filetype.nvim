@@ -10,7 +10,6 @@ local function getlines(i, j)
 end
 
 M.extensions = {
-    [".ch"] = "chill",
     ["4gh"] = "fgl",
     ["4gl"] = "fgl",
     ["8th"] = "8th",
@@ -92,6 +91,7 @@ M.extensions = {
     ["cfg"] = "cfg",
     ["cfi"] = "cf",
     ["cfm"] = "cf",
+    ["ch"] = "chill",
     ["chf"] = "ch",
     ["cho"] = "chordpro",
     ["chopro"] = "chordpro",
@@ -1564,7 +1564,16 @@ M.function_complex = {
 }
 
 M.shebang = {
-    ["bash"] = "sh"
+    ["ash"] = "sh",
+    ["bash"] = "sh",
+    ["csh"] = "sh",
+    ["dash"] = "sh",
+    ["ksh"] = "sh",
+    ["mksh"] = "sh",
+    ["pdksh"] = "sh",
+    ["tcsh"] = "sh",
+    ["yash"] = "sh",
+    ["node"] = "javascript",
 }
 
 return M
