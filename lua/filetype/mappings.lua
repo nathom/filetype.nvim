@@ -743,6 +743,7 @@ M.literal = {
     ["exports"] = "exports",
     ["fglrxrc"] = "xml",
     ["fstab"] = "fstab",
+    ["gitconfig"] = "gitconfig",
     ["gitolite.conf"] = "gitolite",
     ["gnashpluginrc"] = "gnash",
     ["gnashrc"] = "gnash",
@@ -1571,7 +1572,7 @@ M.function_complex = {
 }
 
 M.shebang = {
-    ["bash"] = "sh"
+    ["bash"] = "sh",
 }
 
 return M
