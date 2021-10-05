@@ -292,3 +292,11 @@ Average startup time (100 rounds): **26.492 ms**
 </details>
 
 \* The time my machine takes to source the file goes from 9.1 ms to (0.022 + 0.03) ms, which is a 175x speedup.
+
+## Contributions
+
+All contributions are appreciated! But please make sure to follow these guidelines:
+
+- Format your code with stylua, complying with the rules in the `stylua.toml` file
+- Document any new functions you write, and update the documentation of functions
+you edit if appropriate
