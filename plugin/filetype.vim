@@ -1,5 +1,4 @@
 augroup filetypedetect
-
-au BufNewFile,BufRead * lua require('filetype').resolve()
-
+    au!
+    au BufNewFile,BufRead * lua require('filetype').resolve()
 augroup END
