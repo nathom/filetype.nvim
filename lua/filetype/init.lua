@@ -28,27 +28,17 @@ if vim.g.ft_ignore_pat == nil then
 end
 local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
 
-local function star_set_filetype(name)
-    if not ft_ignore_regex:match_str(name) then
-        return set_filetype(name)
-    end
-    return false
-end
-
 -- Loop through the regex-filetype pairs in the map table
 -- and check if absolute_path matches any of them
 -- Returns true if the filetype was set
 local function try_regex(absolute_path, maps, star_set)
+    if star_set and ft_ignore_regex:match_str(absolute_path) then
+        return false
+    end
     for regexp, ft in pairs(maps) do
         if absolute_path:find(regexp) then
-            if star_set then
-                if star_set_filetype(ft) then
-                    return true
-                end
-            else
-                if set_filetype(ft) then
-                    return true
-                end
+            if set_filetype(ft) then
+                return true
             end
         end
     end
