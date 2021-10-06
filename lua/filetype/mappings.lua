@@ -573,6 +573,7 @@ M.extensions = {
     ["toml"] = "toml",
     ["tpl"] = "smarty",
     ["tpm"] = "xml",
+    ["tpp"] = "cpp",
     ["tr"] = "nroff",
     ["tsc"] = "monk",
     ["tsx"] = "typescriptreact",
