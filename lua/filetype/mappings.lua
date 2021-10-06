@@ -1,12 +1,8 @@
 local M = {}
 
 local function getlines(i, j)
-    local getline = vim.fn.getline
-    local s = getline(i)
-    for k = i + 1, j do
-        s = s .. getline(k)
-    end
-    return s
+    local lines = vim.api.nvim_buf_get_lines(0, i - 1, j, false)
+    return table.concat(lines, "")
 end
 
 M.extensions = {
