@@ -10,7 +10,6 @@ local function getlines(i, j)
 end
 
 M.extensions = {
-    [".ch"] = "chill",
     ["4gh"] = "fgl",
     ["4gl"] = "fgl",
     ["8th"] = "8th",
@@ -92,6 +91,7 @@ M.extensions = {
     ["cfg"] = "cfg",
     ["cfi"] = "cf",
     ["cfm"] = "cf",
+    ["ch"] = "chill",
     ["chf"] = "ch",
     ["cho"] = "chordpro",
     ["chopro"] = "chordpro",
@@ -1022,9 +1022,7 @@ M.function_extensions = {
     end,
     ["t"] = function()
         -- Don't know how to translate this :(
-        vim.cmd(
-            [[if !dist#ft#FTnroff() && !dist#ft#FTperl() | setf tads | endif]]
-        )
+        vim.cmd([[if !dist#ft#FTnroff() && !dist#ft#FTperl() | setf tads | endif]])
     end,
     ["class"] = function()
         -- Decimal escape sequence
@@ -1078,10 +1076,7 @@ M.function_extensions = {
 
         if top_file:find("linuxdoc") then
             return "sgmlnx"
-        elseif
-            getline(1):find("%<%!DOCTYPE.*DocBook")
-            or getline(2):find("<!DOCTYPE.*DocBook")
-        then
+        elseif getline(1):find("%<%!DOCTYPE.*DocBook") or getline(2):find("<!DOCTYPE.*DocBook") then
             vim.b.docbk_type = "sgml"
             vim.b.docbk_ver = 4
             return "docbk"
@@ -1098,10 +1093,7 @@ M.function_extensions = {
 
         if top_file:find("linuxdoc") then
             return "sgmlnx"
-        elseif
-            getline(1):find("%<%!DOCTYPE.*DocBook")
-            or getline(2):find("<!DOCTYPE.*DocBook")
-        then
+        elseif getline(1):find("%<%!DOCTYPE.*DocBook") or getline(2):find("<!DOCTYPE.*DocBook") then
             vim.b.docbk_type = "sgml"
             vim.b.docbk_ver = 4
             return "docbk"
@@ -1110,11 +1102,7 @@ M.function_extensions = {
         end
     end,
     ["reg"] = function()
-        if
-            vim.fn.getline(1):find(
-                "^REGEDIT[0-9]*%s*$|^Windows Registry Editor Version %d*%.%d*%s*$"
-            )
-        then
+        if vim.fn.getline(1):find("^REGEDIT[0-9]*%s*$|^Windows Registry Editor Version %d*%.%d*%s*$") then
             return "registry"
         end
     end,
@@ -1128,10 +1116,7 @@ M.function_extensions = {
         end
     end,
     ["me"] = function()
-        if
-            vim.fn.expand("<afile>") ~= "read.me"
-            and vim.fn.expand("<afile>") ~= "click.me"
-        then
+        if vim.fn.expand("<afile>") ~= "read.me" and vim.fn.expand("<afile>") ~= "click.me" then
             return "nroff"
         end
     end,
@@ -1431,20 +1416,12 @@ M.function_literal = {
         return "xf86conf"
     end,
     ["INDEX"] = function()
-        if
-            vim.fn.getline(1):find(
-                "^%s*(distribution|installed_software|root|bundle|product)%s*$"
-            )
-        then
+        if vim.fn.getline(1):find("^%s*(distribution|installed_software|root|bundle|product)%s*$") then
             return "psf"
         end
     end,
     ["INFO"] = function()
-        if
-            vim.fn.getline(1):find(
-                "^%s*(distribution|installed_software|root|bundle|product)%s*$"
-            )
-        then
+        if vim.fn.getline(1):find("^%s*(distribution|installed_software|root|bundle|product)%s*$") then
             return "psf"
         end
     end,
