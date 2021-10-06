@@ -116,8 +116,11 @@ function M.resolve()
 
     -- The endswith table is left separate in case there an an optimization t
     -- that can be applied later. As of now, it's just using regexes.
-    if try_regex(absolute_path, map.endswith) then
-        return
+    for ends, ft in pairs(map.endswith) do
+        if vim.endswith(absolute_path, ends) then
+            setf(ft)
+            return
+        end
     end
 
     if try_regex(absolute_path, map.complex) then
