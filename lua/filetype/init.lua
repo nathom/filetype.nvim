@@ -24,15 +24,23 @@ local function set_filetype(name)
 end
 
 if vim.g.ft_ignore_pat == nil then
-    vim.g.ft_ignore_pat = [[\.\(Z\|gz\|bz2\|zip\|tgz\)$]]
+    vim.g.ft_ignore_pat = { ".Z", ".gz", ".bz2", ".zip", ".tgz" }
 end
-local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
+
+local function array_endswith(str, arr)
+    for i = 1, #arr do
+        if vim.endswith(str, arr[i]) then
+            return true
+        end
+    end
+    return false
+end
 
 -- Loop through the regex-filetype pairs in the map table
 -- and check if absolute_path matches any of them
 -- Returns true if the filetype was set
 local function try_regex(absolute_path, maps, star_set)
-    if star_set and ft_ignore_regex:match_str(absolute_path) then
+    if star_set and array_endswith(absolute_path, vim.g.ft_ignore_pat) then
         return false
     end
     for regexp, ft in pairs(maps) do
