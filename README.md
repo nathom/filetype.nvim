@@ -91,7 +91,13 @@ require('filetype').setup({
         },
         function_complex = {
         },
-    }
+    },
+		extra_function = {
+			-- Set a function to all file types
+			all = function()
+				vim.bo.formatoptions = "cro"
+			end
+		}
 })
 ```
 

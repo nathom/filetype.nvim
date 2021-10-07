@@ -19,6 +19,10 @@ local function set_filetype(name)
             setf(result)
             return true
         end
+    elseif type(name) == "table" then
+        setf(name[1])
+        name[2]()
+        return true
     end
     return false
 end
@@ -29,7 +33,9 @@ end
 local ft_ignore_regex = vim.regex(vim.g.ft_ignore_pat)
 
 local function star_set_filetype(name)
-    if not ft_ignore_regex:match_str(name) then
+    -- Check if is a table and get first value
+    local filename = type(name) == "table" and name[1] or name
+    if not ft_ignore_regex:match_str(filename) then
         return set_filetype(name)
     end
     return false
@@ -72,6 +78,15 @@ function M.setup(opts)
         for table_name, table in pairs(opts.overrides) do
             for filename, filetype in pairs(table) do
                 map[table_name][filename] = filetype
+            end
+        end
+    end
+    -- Apply a function to all files types
+    -- Extend the original value to a table, the first item is the original value and second a function
+    if opts.extra_function.all and type(opts.extra_function.all) == "function" then
+        for table_name, table in pairs(map) do
+            for filename, filetype in pairs(table) do
+                map[table_name][filename] = { filetype, opts.extra_function.all }
             end
         end
     end
