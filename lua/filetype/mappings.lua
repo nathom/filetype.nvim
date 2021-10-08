@@ -749,6 +749,7 @@ M.literal = {
     ["fglrxrc"] = "xml",
     ["fstab"] = "fstab",
     ["gitconfig"] = "gitconfig",
+    ["git-rebase-todo"] = "gitrebase",
     ["gitolite.conf"] = "gitolite",
     ["gnashpluginrc"] = "gnash",
     ["gnashrc"] = "gnash",
