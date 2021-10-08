@@ -383,6 +383,7 @@ M.extensions = {
     ["opam.template"] = "opam",
     ["or"] = "openroad",
     ["ora"] = "ora",
+    ["org"] = "org",
     ["orx"] = "rexx",
     ["p36"] = "plm",
     ["p6"] = "raku",
