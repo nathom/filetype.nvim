@@ -1,12 +1,10 @@
 local M = {}
 
 local function getlines(i, j)
-    local getline = vim.fn.getline
-    local s = getline(i)
-    for k = i + 1, j do
-        s = s .. getline(k)
-    end
-    return s
+    return table.concat(
+        vim.api.nvim_buf_get_lines(0, i - 1, j or i, true),
+        "\n"
+    )
 end
 
 M.extensions = {
@@ -980,42 +978,42 @@ M.function_extensions = {
         vim.cmd([[if !dist#ft#FTnroff() | setf xmath | endif]])
     end,
     ["xpm"] = function()
-        if vim.fn.getline(1):find("XPM2") then
+        if getlines(1):find("XPM2") then
             return "xpm2"
         else
             return "xpm"
         end
     end,
     ["module"] = function()
-        if vim.fn.getline(1):find("%<%?php") then
+        if getlines(1):find("%<%?php") then
             return "php"
         else
             return "virata"
         end
     end,
     ["pkg"] = function()
-        if vim.fn.getline(1):find("%<%?php") then
+        if getlines(1):find("%<%?php") then
             return "php"
         else
             return "virata"
         end
     end,
     ["hw"] = function()
-        if vim.fn.getline(1):find("%<%?php") then
+        if getlines(1):find("%<%?php") then
             return "php"
         else
             return "virata"
         end
     end,
     ["ts"] = function()
-        if vim.fn.getline(1):find("<%?xml") then
+        if getlines(1):find("<%?xml") then
             return "xml"
         else
             return "typescript"
         end
     end,
     ["ttl"] = function()
-        if vim.fn.getline(1):find("^@?(prefix|base)") then
+        if getlines(1):find("^@?(prefix|base)") then
             return "stata"
         end
     end,
@@ -1028,36 +1026,36 @@ M.function_extensions = {
     ["class"] = function()
         -- Decimal escape sequence
         -- The original was "^\xca\xfe\xba\xbe"
-        if vim.fn.getline(1):find("^\x202\x254\x186\x190") then
+        if getlines(1):find("^\x202\x254\x186\x190") then
             return "stata"
         end
     end,
     ["smi"] = function()
-        if vim.fn.getline(1):find("smil") then
+        if getlines(1):find("smil") then
             return "smil"
         else
             return "mib"
         end
     end,
     ["smil"] = function()
-        if vim.fn.getline(1):find("<?%s*xml.*?>") then
+        if getlines(1):find("<?%s*xml.*?>") then
             return "xml"
         else
             return "smil"
         end
     end,
     ["cls"] = function()
-        local getline = vim.fn.getline
-        if getline(1):find("^%%") then
+        local first_line = getlines(1)
+        if first_line:find("^%%") then
             return "tex"
-        elseif getline(1):sub(1, 2) == "#" and getline(1):find("rexx") then
+        elseif first_line:sub(1, 1) == "#" and first_line:find("rexx") then
             return "rexx"
         else
             return "st"
         end
     end,
     ["install"] = function()
-        if vim.fn.getline(1):find("%<%?php") then
+        if getlines(1):find("%<%?php") then
             return "php"
         else
             vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
@@ -1069,17 +1067,12 @@ M.function_extensions = {
         end
     end,
     ["sgm"] = function()
-        local getline = vim.fn.getline
-        local top_file = getline(1)
-        for i = 2, 5 do
-            top_file = top_file .. getline(i)
-        end
-
+        local top_file = getlines(1, 5)
         if top_file:find("linuxdoc") then
             return "sgmlnx"
         elseif
-            getline(1):find("%<%!DOCTYPE.*DocBook")
-            or getline(2):find("<!DOCTYPE.*DocBook")
+            getlines(1):find("%<%!DOCTYPE.*DocBook")
+            or getlines(2):find("<!DOCTYPE.*DocBook")
         then
             vim.b.docbk_type = "sgml"
             vim.b.docbk_ver = 4
@@ -1089,17 +1082,12 @@ M.function_extensions = {
         end
     end,
     ["sgml"] = function()
-        local getline = vim.fn.getline
-        local top_file = getline(1)
-        for i = 2, 5 do
-            top_file = top_file .. getline(i)
-        end
-
+        local top_file = getlines(1, 5)
         if top_file:find("linuxdoc") then
             return "sgmlnx"
         elseif
-            getline(1):find("%<%!DOCTYPE.*DocBook")
-            or getline(2):find("<!DOCTYPE.*DocBook")
+            getlines(1):find("%<%!DOCTYPE.*DocBook")
+            or getlines(2):find("<!DOCTYPE.*DocBook")
         then
             vim.b.docbk_type = "sgml"
             vim.b.docbk_ver = 4
@@ -1110,7 +1098,7 @@ M.function_extensions = {
     end,
     ["reg"] = function()
         if
-            vim.fn.getline(1):find(
+            getlines(1):find(
                 "^REGEDIT[0-9]*%s*$|^Windows Registry Editor Version %d*%.%d*%s*$"
             )
         then
@@ -1118,9 +1106,9 @@ M.function_extensions = {
         end
     end,
     ["pm"] = function()
-        if vim.fn.getline(1):find("XPM2") then
+        if getlines(1):find("XPM2") then
             return "xpm2"
-        elseif vim.fn.getline(1):find("XPM") then
+        elseif getlines(1):find("XPM") then
             return "xpm"
         else
             return "perl"
@@ -1140,18 +1128,14 @@ M.function_extensions = {
         end
     end,
     ["edn"] = function()
-        if vim.fn.getline(1):find("^%s*%(%s*edif") then
+        if getlines(1):find("^%s*%(%s*edif") then
             return "edif"
         else
             return "clojure"
         end
     end,
     ["rul"] = function()
-        local getline = vim.fn.getline
-        local top_file = getline(1)
-        for i = 2, 6 do
-            top_file = top_file .. getline(i)
-        end
+        local top_file = getlines(1, 6)
         if top_file:find("InstallShield") then
             return "ishd"
         else
@@ -1166,7 +1150,7 @@ M.function_extensions = {
         end
     end,
     ["cpy"] = function()
-        if vim.fn.getline(1):find("^%#%#") then
+        if getlines(1):find("^%#%#") then
             return "python"
         else
             return "cobol"
@@ -1174,10 +1158,9 @@ M.function_extensions = {
     end,
     -- Complicated functions
     ["asp"] = function()
-        local getline = vim.fn.getline
         if vim.g.filetype_asp ~= nil then
             return vim.g.filetype_asp
-        elseif (getline(1) .. getline(2) .. getline(3)):find("perlscript") then
+        elseif getlines(1, 3):find("perlscript") then
             return "aspperl"
         else
             return "aspvbs"
@@ -1191,8 +1174,7 @@ M.function_extensions = {
         end
     end,
     ["cmd"] = function()
-        local getline = vim.fn.getline
-        if getline(1):find("^%/%*") then
+        if getlines(1):find("^%/%*") then
             return "rexx"
         else
             return "dosbatch"
@@ -1424,14 +1406,14 @@ M.function_literal = {
         return "xf86conf"
     end,
     ["XF86Config"] = function()
-        if vim.fn.getline(1):find("XConfigurator") then
+        if getlines(1):find("XConfigurator") then
             vim.b.xf86conf_xfree86_version = 3
         end
         return "xf86conf"
     end,
     ["INDEX"] = function()
         if
-            vim.fn.getline(1):find(
+            getlines(1):find(
                 "^%s*(distribution|installed_software|root|bundle|product)%s*$"
             )
         then
@@ -1440,7 +1422,7 @@ M.function_literal = {
     end,
     ["INFO"] = function()
         if
-            vim.fn.getline(1):find(
+            getlines(1):find(
                 "^%s*(distribution|installed_software|root|bundle|product)%s*$"
             )
         then
@@ -1448,12 +1430,12 @@ M.function_literal = {
         end
     end,
     ["control"] = function()
-        if vim.fn.getline(1):find("^Source%:") then
+        if getlines(1):find("^Source%:") then
             return "debcontrol"
         end
     end,
     ["NEWS"] = function()
-        if vim.fn.getline(1):find("%; urgency%=") then
+        if getlines(1):find("%; urgency%=") then
             return "debchangelog"
         end
     end,
@@ -1527,7 +1509,7 @@ M.function_complex = {
         return "ptcap"
     end,
     ["[cC]hange[lL]og"] = function()
-        if vim.fn.getline(1):find("%; urgency%=") then
+        if getlines(1):find("%; urgency%=") then
             return "debchangelog"
         else
             return "changelog"
