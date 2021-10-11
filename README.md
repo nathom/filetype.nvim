@@ -47,7 +47,7 @@ First, install using your favorite package manager. Using [packer](https://githu
 use("nathom/filetype.nvim")
 ```
 
-Then, add the following to `init.lua`
+If using a Neovim version earlier than 0.6.0, add the following to `init.lua`
 
 ```lua
 -- Do not source the default filetype.vim
