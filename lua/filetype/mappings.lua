@@ -1555,6 +1555,7 @@ M.function_complex = {
 
 M.shebang = {
     ["bash"] = "sh",
+    ["python3"] = "python",
 }
 
 return M
