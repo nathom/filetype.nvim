@@ -97,16 +97,17 @@ function M.resolve()
     -- Lookup file extension
     if ext then
         filetype = map.extensions[ext] or map.function_extensions[ext]
-        if filetype then
-            set_filetype(filetype)
-            return
-        end
     end
 
     -- Lookup filename
     local literal = map.literal[filename] or map.function_literal[filename]
     if literal then
-        set_filetype(literal)
+        filetype = literal
+    end
+
+    if filetype ~= nil then
+        set_filetype(filetype)
+        return
     end
 
     -- Finally, we check the ones that require regexes.
