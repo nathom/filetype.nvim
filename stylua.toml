@@ -1,7 +1,7 @@
 # Customized
 indent_type = "Spaces"
+column_width = 79
 # Default
-column_width = 120
 line_endings = "Unix"
 indent_width = 4
 quote_style = "AutoPreferDouble"

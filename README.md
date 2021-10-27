@@ -300,3 +300,4 @@ All contributions are appreciated! But please make sure to follow these guidelin
 - Format your code with stylua, complying with the rules in the `stylua.toml` file
 - Document any new functions you write, and update the documentation of functions
 you edit if appropriate
+- Set the base branch to `dev`
