@@ -79,10 +79,18 @@ require('filetype').setup({
 
         -- The same as the ones above except the keys map to functions
         function_extensions = {
-            py = function() 
-                print('opening a python file!!!')
-                vim.bo.filetype = 'python'
-            end
+            ["cpp"] = function()
+                vim.bo.filetype = "cpp"
+                -- Remove annoying indent jumping
+                vim.bo.cinoptions = vim.bo.cinoptions .. "L0"
+            end,
+            ["pdf"] = function()
+                vim.bo.filetype = "pdf"
+                -- Open in PDF viewer (Skim.app) automatically
+                vim.fn.jobstart(
+                    "open -a skim " .. '"' .. vim.fn.expand("%") .. '"'
+                )
+            end,
         },
         function_literal = {
             Brewfile = function() 
@@ -90,6 +98,9 @@ require('filetype').setup({
             end
         },
         function_complex = {
+            ["*.math_notes/%w+"] = function()
+                vim.cmd("iabbrev $ $$")
+            end
         },
     }
 })
