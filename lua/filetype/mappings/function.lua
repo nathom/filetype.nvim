@@ -589,6 +589,7 @@ M.complex = {
 
 M.shebang = {
     ["bash"] = "sh",
+    ["node"] = "javascript",
 }
 
 return M
