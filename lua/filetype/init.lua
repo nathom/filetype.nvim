@@ -110,6 +110,10 @@ local function try_filetype_map(absolute_path, filename, ext, map)
         return true
     end
 
+    if try_regex(absolute_path, map.function_complex) then
+        return true
+    end
+
     -- These require the use of a special function that excludes
     -- certain filetypes from being binded to autocommands
     -- using g:ft_ignore_pat
