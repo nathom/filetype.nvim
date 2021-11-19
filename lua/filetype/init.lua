@@ -228,7 +228,7 @@ function M.resolve()
     local shebang = analyze_shebang()
     if shebang then
         shebang = custom_map.shebang[shebang]
-            or builtin_map.shebang[shebang]
+            or function_maps.shebang[shebang]
             or shebang
         set_filetype(shebang)
     end
