@@ -62,19 +62,19 @@ That's it! You should now have a much snappier neovim experience!
 
 ```lua
 -- In init.lua or filetype.nvim's config file
-require('filetype').setup({
+require("filetype").setup({
     overrides = {
         extensions = {
             -- Set the filetype of *.pn files to potion
-            pn = 'potion'
+            pn = "potion",
         },
         literal = {
             -- Set the filetype of files named "MyBackupFile" to lua
-            MyBackupFile = 'lua',
+            MyBackupFile = "lua",
         },
         complex = {
             -- Set the filetype of any full filename matching the regex to gitconfig
-            [".*git/config"] = "gitconfig",  -- Included in the plugin
+            [".*git/config"] = "gitconfig", -- Included in the plugin
         },
 
         -- The same as the ones above except the keys map to functions
@@ -93,16 +93,16 @@ require('filetype').setup({
             end,
         },
         function_literal = {
-            Brewfile = function() 
+            Brewfile = function()
                 vim.cmd("syntax off")
-            end
+            end,
         },
         function_complex = {
             ["*.math_notes/%w+"] = function()
                 vim.cmd("iabbrev $ $$")
-            end
+            end,
         },
-    }
+    },
 })
 ```
 
