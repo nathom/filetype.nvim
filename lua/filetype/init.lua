@@ -119,6 +119,15 @@ local function try_all_maps(absolute_path, filename, ext, extensions)
     if try_regex(absolute_path, map.star_sets, true) then
         return true
     end
+end
+-- Check the first line in the buffer for a shebang
+-- If there is one, set the filetype appropriately
+local function analyze_shebang()
+    local fstline = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
+    if fstline then
+        return fstline:match("#!%s*/usr/bin/env%s+(%S+)$")
+            or fstline:match("#!%s*/%S+/([^ /]+)$")
+    end
 
     return false
 end
