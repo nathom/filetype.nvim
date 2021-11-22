@@ -88,6 +88,8 @@ return {
     ["calendar"] = "calendar",
     ["catalog"] = "catalog",
     ["cfengine.conf"] = "cfengine",
+    [".clang-format"] = "yaml",
+    ["_clang-format"] = "yaml",
     ["cm3.cfg"] = "m3quake",
     ["configure.ac"] = "config",
     ["configure.in"] = "config",
