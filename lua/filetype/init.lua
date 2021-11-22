@@ -145,17 +145,14 @@ function M.resolve()
 
     local filetype
 
-    local expand = vim.fn.expand
+    local absolute_path = vim.api.nvim_buf_get_name(0)
 
-    local filename = expand("%:t")
-    if filename == "" then
+    if #absolute_path == 0 then
         return
     end
 
-    -- Extension
-    local ext = filename:match("%S%.(%w+)$")
-
-    local absolute_path = expand("%:p")
+    local filename = absolute_path:match(".*%/(.*)")
+    local ext = filename:match(".*%.(%w+)")
 
     -- Try to match the custom defined filetypes
     if custom_map ~= nil then
