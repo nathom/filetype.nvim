@@ -233,7 +233,9 @@ function M.resolve()
     -- and set the filetype to that
     local shebang = analyze_shebang()
     if shebang then
-        shebang = builtin_map.shebang[shebang] or shebang
+        shebang = custom_map.shebang[shebang]
+            or function_maps.shebang[shebang]
+            or shebang
         set_filetype(shebang)
     end
 end
