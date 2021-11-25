@@ -155,7 +155,7 @@ function M.resolve()
         return
     end
 
-    local filename = absolute_path:match(".*%/(.*)")
+    local filename = absolute_path:match(".*[\\/](.*)")
     local ext = filename:match(".*%.(%w+)")
 
     -- Try to match the custom defined filetypes
