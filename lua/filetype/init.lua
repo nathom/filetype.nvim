@@ -176,11 +176,15 @@ function M.resolve()
         return
     end
 
-    -- If there is no extension, look for a shebang
-    -- and set the filetype to that
+    -- If there is no extension, look for a shebang and set the filetype to that
+    -- This should be reworked to include well-known shebangs as node -> javascript
     local shebang = analyze_shebang()
     if shebang then
-        shebang = builtin_map.shebang[shebang] or shebang
+        if custom_map then
+            if custom_map.overrides then
+                shebang = custom_map.shebang[shebang] or shebang
+            end
+        end
         set_filetype(shebang)
     end
 end
