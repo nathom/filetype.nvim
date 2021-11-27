@@ -35,16 +35,6 @@ local function star_set_filetype(name)
     return false
 end
 
--- Check the first line in the buffer for a shebang
--- If there is one, set the filetype appropriately
-local function analyze_shebang()
-    local fstline = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
-    if fstline then
-        return fstline:match("#!%s*/usr/bin/env%s+(%a+)$")
-            or fstline:match("#!%s*/.*/(%a+)$")
-    end
-end
-
 -- Loop through the regex-filetype pairs in the map table
 -- and check if absolute_path matches any of them
 -- Returns true if the filetype was set
@@ -79,51 +69,6 @@ local function try_lookup(query, map)
     return false
 end
 
--- Trys to match the tables in map to the filename components given
--- Returns true if a match was found, otherwise false
-local function try_all_maps(absolute_path, filename, ext, extensions)
-    -- We first check the ones that only require a table lookup
-    -- because they're the fastest
-
-    -- Lookup file extension
-    if ext then
-        if try_lookup(ext, map.extensions) then
-            return true
-        end
-    end
-
-    -- Lookup filename
-    local literal = map.literal[filename] or map.function_literal[filename]
-    if literal then
-        set_filetype(literal)
-        return true
-    end
-
-    -- Finally, we check the ones that require regexes.
-    -- try_regex is relatively slow because it has to iterate through
-    -- the key-value pairs and run a regex for each one
-
-    -- The endswith table is left separate in case there an an optimization
-    -- that can be applied later. As of now, it's just using regexes.
-    if try_regex(absolute_path, map.endswith) then
-        return true
-    end
-
-    if try_regex(absolute_path, map.complex) then
-        return true
-    end
-
-    if try_regex(absolute_path, map.function_complex) then
-        return true
-    end
-
-    -- These require the use of a special function that excludes
-    -- certain filetypes from being binded to autocommands
-    -- using g:ft_ignore_pat
-    if try_regex(absolute_path, map.star_sets, true) then
-        return true
-    end
-end
 -- Check the first line in the buffer for a shebang
 -- If there is one, set the filetype appropriately
 local function analyze_shebang()
@@ -146,8 +91,6 @@ end
 function M.resolve()
     -- Just in case
     vim.g.did_load_filetypes = 1
-
-    local filetype
 
     local absolute_path = vim.api.nvim_buf_get_name(0)
 
@@ -233,11 +176,15 @@ function M.resolve()
         return
     end
 
-    -- If there is no extension, look for a shebang
-    -- and set the filetype to that
+    -- If there is no extension, look for a shebang and set the filetype to that
+    -- This should be reworked to include well-known shebangs as node -> javascript
     local shebang = analyze_shebang()
     if shebang then
-        shebang = builtin_map.shebang[shebang] or shebang
+        if custom_map then
+            if custom_map.overrides then
+                shebang = custom_map.shebang[shebang] or shebang
+            end
+        end
         set_filetype(shebang)
     end
 end
