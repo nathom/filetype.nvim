@@ -120,7 +120,7 @@ a regex for each one.
 
 **These were measured using [startuptime.vim](https://github.com/tweekmonster/startuptime.vim)**
 
-### Without `filetype.nvim`:
+### Without `filetype.nvim`
 
 Average startup time (100 rounds): **36.410 ms**
 
