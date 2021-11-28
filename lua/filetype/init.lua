@@ -81,6 +81,16 @@ local function analyze_shebang()
     return false
 end
 
+-- Return the value of map.shebang[s]; that is the value of the field indexed
+-- by the value of s in map.shebang. This could be nil.
+local function shebang_from_map(s, map)
+    -- Avoid indexing nil.
+    if map and map.shebang then
+        return map.shebang[s]
+    end
+    return false
+end
+
 local M = {}
 
 function M.setup(opts)
@@ -176,13 +186,15 @@ function M.resolve()
         return
     end
 
-    -- If there is no extension, look for a shebang and set the filetype to that
-    -- This should be reworked to include well-known shebangs as node -> javascript
+    -- If there is no extension, look for a shebang and set the filetype to
+    -- that. Look for a shebang override in custom_map first. If there is none,
+    -- check the default shebangs defined in function_maps. Otherwise, default
+    -- to setting the filetype to the value of shebang itself.
     local shebang = analyze_shebang()
     if shebang then
-        if custom_map.shebang then
-            shebang = custom_map.shebang[shebang]
-        end
+        shebang = shebang_from_map(shebang, custom_map)
+            or function_maps.shebang[shebang]
+            or shebang
         set_filetype(shebang)
     end
 end
