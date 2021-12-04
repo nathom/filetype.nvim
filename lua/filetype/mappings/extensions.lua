@@ -380,6 +380,7 @@ return {
     ["page"] = "mallard",
     ["papp"] = "papp",
     ["pas"] = "pascal",
+    ["patch"] = "diff",
     ["pbtxt"] = "pbtxt",
     ["pc"] = "proc",
     ["pcmk"] = "pcmk",
