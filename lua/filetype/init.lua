@@ -180,7 +180,7 @@ function M.resolve()
     -- This should be reworked to include well-known shebangs as node -> javascript
     local shebang = analyze_shebang()
     if shebang then
-        if custom_map.shebang then
+        if custom_map and custom_map.shebang then
             shebang = custom_map.shebang[shebang]
         end
         set_filetype(shebang)
