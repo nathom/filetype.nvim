@@ -115,7 +115,7 @@ return {
     ["cuh"] = "cuda",
     ["cxx"] = "cpp",
     ["cyn"] = "cynpp",
-	["dart"] = "dart",
+    ["dart"] = "dart",
     ["dat"] = "nastran",
     ["dcd"] = "dcd",
     ["dcl"] = "clean",
