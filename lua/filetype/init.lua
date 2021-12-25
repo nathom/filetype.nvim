@@ -49,9 +49,8 @@ local function try_regex(absolute_path, maps, star_set)
                     return true
                 end
             else
-                if set_filetype(ft) then
-                    return true
-                end
+                set_filetype(ft)
+                return true
             end
         end
     end
@@ -127,6 +126,11 @@ function M.resolve()
         if try_regex(absolute_path, custom_map.complex) then
             return
         end
+
+        if try_regex(absolute_path, custom_map.function_complex) then
+            return
+        end
+
         if try_regex(absolute_path, custom_map.star_sets, true) then
             return
         end
