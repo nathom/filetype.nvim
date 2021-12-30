@@ -45,6 +45,7 @@ return {
     [".sbclrc"] = "lisp",
     [".screenrc"] = "screen",
     [".slrnrc"] = "slrnrc",
+    [".stylelintrc"] = "json",
     [".tfrc"] = "tf",
     [".tidyrc"] = "tidy",
     [".viminfo"] = "viminfo",
