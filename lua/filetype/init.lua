@@ -58,7 +58,7 @@ local function try_regex(absolute_path, maps, star_set)
 end
 
 local function try_lookup(query, map)
-    if map == nil then
+    if query == nil or map == nil then
         return false
     end
     if map[query] ~= nil then
@@ -80,6 +80,7 @@ local function analyze_shebang()
     return false
 end
 
+
 local M = {}
 
 function M.setup(opts)
@@ -98,7 +99,7 @@ function M.resolve()
     end
 
     local filename = absolute_path:match(".*[\\/](.*)")
-    local ext = filename:match(".*%.(%w+)")
+    local ext = filename:match(".+%.(%w+)")
 
     -- Try to match the custom defined filetypes
     if custom_map ~= nil then
@@ -180,8 +181,10 @@ function M.resolve()
         return
     end
 
-    -- If there is no extension, look for a shebang and set the filetype to that
-    -- This should be reworked to include well-known shebangs as node -> javascript
+    -- If there is no extension, look for a shebang and set the filetype to
+    -- that. Look for a shebang override in custom_map first. If there is none,
+    -- check the default shebangs defined in function_maps. Otherwise, default
+    -- to setting the filetype to the value of shebang itself.
     local shebang = analyze_shebang()
     if shebang then
         if custom_map and custom_map.shebang then
