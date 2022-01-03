@@ -59,7 +59,7 @@ local function try_regex(absolute_path, maps, star_set)
 end
 
 local function try_lookup(query, map)
-    if map == nil then
+    if query == nil or map == nil then
         return false
     end
     if map[query] ~= nil then
@@ -109,7 +109,7 @@ function M.resolve()
     end
 
     local filename = absolute_path:match(".*[\\/](.*)")
-    local ext = filename:match(".*%.(%w+)")
+    local ext = filename:match(".+%.(%w+)")
 
     -- Try to match the custom defined filetypes
     if custom_map ~= nil then
