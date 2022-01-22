@@ -80,6 +80,15 @@ local function analyze_shebang()
     return false
 end
 
+-- Return the value of map.shebang[s]; that is the value of the field indexed
+-- by the value of s in map.shebang. This could be nil.
+local function shebang_from_map(s, map)
+    -- Avoid indexing nil.
+    if map and map.shebang then
+        return map.shebang[s]
+    end
+    return false
+end
 
 local M = {}
 
@@ -187,10 +196,18 @@ function M.resolve()
     -- to setting the filetype to the value of shebang itself.
     local shebang = analyze_shebang()
     if shebang then
-        if custom_map and custom_map.shebang then
-            shebang = custom_map.shebang[shebang]
-        end
+        shebang = shebang_from_map(shebang, custom_map)
+            or function_maps.shebang[shebang]
+            or shebang
         set_filetype(shebang)
+        local mapped_shebang
+        if custom_map and custom_map.shebang then
+            mapped_shebang = custom_map.shebang[shebang]
+        end
+        mapped_shebang = mapped_shebang
+            or function_maps.shebang[shebang]
+            or shebang
+        set_filetype(mapped_shebang)
     end
 end
 

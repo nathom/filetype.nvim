@@ -590,6 +590,7 @@ M.complex = {
 M.shebang = {
     ["bash"] = "sh",
     ["node"] = "javascript",
+    ['python3'] = 'python'
 }
 
 return M
