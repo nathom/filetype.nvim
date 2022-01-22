@@ -9,13 +9,9 @@ import re
 
 VIM_SCRIPT = "misc/filetype.vim"
 
-lines = open(VIM_SCRIPT).readlines()
-
 
 def find_normal_globs():
-    ext_glob = re.compile(
-        r"au\s+BufNewFile,BufRead\s+([\+\*\,\/\.\w]+)\s+setf\s+(\w+)"
-    )
+    ext_glob = re.compile(r"au\s+BufNewFile,BufRead\s+([\+\*\,\/\.\w]+)\s+setf\s+(\w+)")
     asterisks = re.compile(r"\*")
     mapping: dict[str, str] = {}
     for line in lines:
@@ -49,6 +45,16 @@ def find_normal_globs():
     lua_print(simple)
     lua_print(extensions)
     lua_print(complex)
+
+
+def find_function_cmds(flines):
+    non_setf = re.compile(r"au\s+BufNewFile,BufRead\s+(\S+)\s*$")
+    for line in flines:
+        m = non_setf.search(line)
+        if m is not None:
+            print(m.group(1))
+        elif "|" in line and "au" in line:
+            print(line)
 
 
 def find_star_setfs():
@@ -149,17 +155,17 @@ def find_function_globs():
     mapping: dict[str, str] = {}
     for line in lines:
         match = ext_glob.search(line)
+
         if match is None:
             continue
 
         glob, ft = match.groups()
         if "s:Star" in ft:
             continue
+
         for g in glob.split(","):
             mapping[g] = ft
-            # print(f'["{g}"] = "{ft}"')
 
-    # pprint.pprint(mapping)
     extensions: dict[str, str] = {}
     simple: dict[str, str] = {}
     complex: dict[str, str] = {}
@@ -208,15 +214,25 @@ def fix_lua_regexes(text):
     lua_print(fixed)
 
 
-# find_star_setfs()
-# for r in regexes:
-#     converted = convert_glob_to_lua_regex(r)
-#     print(converted)
+def convert_lua_regex_vim(e):
+    e = re.sub(r"%\.", r"\.", e)
+    e = re.sub("/", r"\/", e)
+    return e
 
-# import pyperclip
 
-# print(convert_glob_to_lua_regex(pyperclip.paste()))
+def convert_lua_regexps_to_vim(flines):
+    for line in flines:
+        matches = re.search(r'"([^"]+)":', line)
+        if matches is None:
+            continue
 
-# find_function_globs()
-# find_normal_globs()
-fix_lua_regexes(text)
+        matches = matches.group(1)
+        matches = re.sub(r"%\.", r"\.", matches)
+        matches = re.sub("/", r"\/", matches)
+
+        new_line = re.sub(r'"([^"]+)":', '"' + matches + '":', line)
+        print(new_line.strip())
+
+
+lines = open(VIM_SCRIPT).readlines()
+find_function_cmds(lines)
