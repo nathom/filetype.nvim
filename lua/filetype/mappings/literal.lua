@@ -106,6 +106,7 @@ return {
     ["gitolite.conf"] = "gitolite",
     ["gnashpluginrc"] = "gnash",
     ["gnashrc"] = "gnash",
+    ["go.mod"] = "gomod",
     ["gtkrc"] = "gtkrc",
     ["indentrc"] = "indent",
     ["inittab"] = "inittab",
