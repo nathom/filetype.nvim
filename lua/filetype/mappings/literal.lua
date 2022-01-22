@@ -115,6 +115,7 @@ return {
     ["ipf.rules"] = "ipfilter",
     ["ipf6.conf"] = "ipfilter",
     ["irbrc"] = "ruby",
+    ["Jenkinsfile"] = "groovy",
     ["lftp.conf"] = "lftp",
     ["lilo.conf"] = "lilo",
     ["lltxxxxx.txt"] = "gedcom",
