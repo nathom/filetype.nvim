@@ -40,6 +40,7 @@ return {
     [".pythonrc"] = "python",
     [".pythonstartup"] = "python",
     [".ratpoisonrc"] = "ratpoison",
+    [".Rprofile"] = "r",
     [".reminders"] = "remind",
     [".sawfishrc"] = "lisp",
     [".sbclrc"] = "lisp",
