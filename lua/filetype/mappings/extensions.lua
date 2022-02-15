@@ -422,6 +422,7 @@ return {
     ["psm1"] = "ps1",
     ["pssc"] = "ps1",
     ["ptl"] = "python",
+    ["purs"] = "purescript",
     ["pxd"] = "pyrex",
     ["pxml"] = "papp",
     ["pxsl"] = "papp",
