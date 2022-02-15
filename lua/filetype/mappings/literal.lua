@@ -41,6 +41,7 @@ return {
     [".pythonstartup"] = "python",
     [".ratpoisonrc"] = "ratpoison",
     [".reminders"] = "remind",
+    [".Rprofile"] = "r",
     [".sawfishrc"] = "lisp",
     [".sbclrc"] = "lisp",
     [".screenrc"] = "screen",
