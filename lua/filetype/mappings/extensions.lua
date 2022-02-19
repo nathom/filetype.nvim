@@ -435,6 +435,7 @@ return {
     ["qc"] = "c",
     ["quake"] = "m3quake",
     ["rad"] = "radiance",
+    ["rake"] = "ruby",
     ["raku"] = "raku",
     ["rakudoc"] = "raku",
     ["rakumod"] = "raku",
