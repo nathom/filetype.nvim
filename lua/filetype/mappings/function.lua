@@ -553,16 +553,16 @@ M.complex = {
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
     end,
     ["%.bash[_-]profile"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["%.bash[_-]logout"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["%.bash[_-]aliases"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
-    ["%.bash-fc[_-]"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+    ["%.bash%-fc[_-]"] = function()
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["PKGBUILD.*"] = function()
         vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
@@ -590,7 +590,7 @@ M.complex = {
 M.shebang = {
     ["bash"] = "sh",
     ["node"] = "javascript",
-    ['python3'] = 'python'
+    ["python3"] = "python",
 }
 
 return M
