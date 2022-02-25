@@ -550,7 +550,7 @@ M.complex = {
         end
     end,
     ["%.bashrc.*"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["%.bash[_-]profile"] = function()
         vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
@@ -565,25 +565,25 @@ M.complex = {
         vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["PKGBUILD.*"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["APKBUILD.*"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("bash")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
     end,
     ["%.kshrc.*"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH("ksh")]])
+        vim.cmd([[call dist#ft#SetFileTypeSH("ksh")]])
     end,
     ["%.profile.*"] = function()
-        vim.cmd([[dist#ft#SetFileTypeSH(getline(1))]])
+        vim.cmd([[call dist#ft#SetFileTypeSH(getline(1))]])
     end,
     ["%.tcshrc.*"] = function()
-        vim.cmd([[dist#ft#SetFileTypeShell("tcsh")]])
+        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
     end,
     ["%.login.*"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
     ["%.cshrc.*"] = function()
-        vim.cmd([[dist#ft#CSH()]])
+        vim.cmd([[call dist#ft#CSH()]])
     end,
 }
 
