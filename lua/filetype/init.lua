@@ -103,6 +103,10 @@ function M.resolve()
 
     local absolute_path = vim.api.nvim_buf_get_name(0)
 
+    if vim.bo.filetype == "bqfpreview" then
+        absolute_path = vim.fn.expand("<amatch>")
+    end
+
     if #absolute_path == 0 then
         return
     end
