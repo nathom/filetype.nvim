@@ -218,6 +218,8 @@ return {
     ["html.m4"] = "htmlm4",
     ["htpp"] = "hastepreproc",
     ["htt"] = "httest",
+    ["hx"] = "haxe",
+    ["hxml"] = "hxml",
     ["hxx"] = "cpp",
     ["iba"] = "ibasic",
     ["ibi"] = "ibasic",
