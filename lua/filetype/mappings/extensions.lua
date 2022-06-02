@@ -70,6 +70,7 @@ return {
     ["bl"] = "blank",
     ["bsdl"] = "bsdl",
     ["bst"] = "bst",
+    ["bu"] = "yaml",
     ["builder"] = "ruby",
     ["c++"] = "cpp",
     ["cabal"] = "cabal",
