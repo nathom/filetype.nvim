@@ -62,6 +62,7 @@ return {
     ["Appfile"] = "ruby",
     ["Brewfile"] = "ruby",
     ["BUILD"] = "bzl",
+    ["Cargo.lock"] = "toml",
     ["CMakeLists.txt"] = "cmake",
     ["COMMIT_EDITMSG"] = "gitcommit",
     ["Containerfile"] = "dockerfile",
