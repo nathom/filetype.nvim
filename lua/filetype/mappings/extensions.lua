@@ -301,7 +301,6 @@ return {
     ["lte"] = "latte",
     ["ltx"] = "tex",
     ["lua"] = "lua",
-    ["lock"] = "toml",
     ["m2"] = "modula2",
     ["m4gl"] = "fgl",
     ["man"] = "nroff",
