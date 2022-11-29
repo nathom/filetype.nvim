@@ -5,7 +5,7 @@ return {
     ["8th"] = "8th",
     ["ACE"] = "lace",
     ["BUILD"] = "bzl",
-    ["C"] = "cpp",
+    ["c"] = "cpp",
     ["DEF"] = "modula2",
     ["Dockerfile"] = "dockerfile",
     ["EC"] = "esqlc",
