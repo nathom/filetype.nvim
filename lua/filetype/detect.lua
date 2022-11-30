@@ -193,4 +193,55 @@ function M.asm_syntax()
     return (vim.g.asmsyntax ~= 0 and vim.g.asmsyntax) or "asm"
 end
 
+--- This function checks for user define g:filetype_euphoria and returns
+--- "euphoira3" if it isn't set
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.euphoria_check()
+    if vim.g.filetype_euphoria then
+        return vim.g.filetype_euphoria
+    end
+
+    return "euphoria3"
+end
+
+--- This function checks for user define g:filetype_euphoria and checks
+--- the contents of the first 100 lines for hints if it isn't set
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.eiffel_check()
+    if vim.g.filetype_euphoria then
+        return vim.g.filetype_euphoria
+    end
+
+    for _, line in ipairs(util.getlines(0, 100)) do
+        if util.findany(line, { "^%s*<'%s*$", "^%s*'>%s*$" }) then
+            return "specman"
+        end
+    end
+
+    return "eiffel"
+end
+
+--- This function checks for user define g:filetype_euphoria and checks
+--- the contents of the first 100 lines for hints if it isn't set
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.elixir_check()
+    if vim.g.filetype_euphoria then
+        return vim.g.filetype_euphoria
+    end
+
+    for _, line in ipairs(util.getlines(0, 100)) do
+        if util.match_vim_regex(line, [[\c^--\|^ifdef\>\|^include\>]]) then
+            return "euphoria3"
+        end
+    end
+
+    return "elixir"
+end
+
 return M

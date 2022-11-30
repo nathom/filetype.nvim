@@ -266,50 +266,50 @@ M.extensions = {
     ["ch"] = function()
         vim.cmd([[call dist#ft#FTchange()]])
     end,
-    ["ent"] = function()
-        vim.cmd([[call dist#ft#FTent()]])
-    end,
     ["ex"] = function()
-        vim.cmd([[call dist#ft#ExCheck()]])
+        return detect.elixir_check()
     end,
     ["eu"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["ew"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["exu"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["exw"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EU"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EW"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EX"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EXU"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EXW"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
+    end,
+    ["e"] = function()
+        return detect.eiffel_check()
+    end,
+    ["E"] = function()
+        return detect.eiffel_check()
+    end,
+    ["ent"] = function()
+        return detect.eiffel_check()
     end,
     ["d"] = function()
         vim.cmd([[call dist#ft#DtraceCheck()]])
     end,
     ["com"] = function()
         vim.cmd([[call dist#ft#BindzoneCheck('dcl')]])
-    end,
-    ["e"] = function()
-        vim.cmd([[call dist#ft#FTe()]])
-    end,
-    ["E"] = function()
-        vim.cmd([[call dist#ft#FTe()]])
     end,
     ["html"] = function()
         vim.cmd([[call dist#ft#FThtml()]])
