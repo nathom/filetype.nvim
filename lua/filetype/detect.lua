@@ -559,4 +559,28 @@ function M.proto(default)
     return default
 end
 
+--- Distinguish between dtrace and d files
+--- Taken from vim.filetype.detect
+---
+--- @return string|nil The filetype detected
+function M.dtrace()
+    if vim.fn.did_filetype() ~= 0 then
+        -- Filetype was already detected
+        return
+    end
+
+    for _, line in ipairs(util.getlines(0, 100)) do
+        if util.match_vim_regex(line, [[\c^module\>\|^import\>]]) then
+            --  D files often start with a module and/or import statement.
+            return "d"
+        end
+
+        if util.findany(line, { "^#!%S+dtrace", "#pragma%s+D%s+option", ":%S-:%S-:" }) then
+            return "dtrace"
+        end
+    end
+
+    return "d"
+end
+
 return M

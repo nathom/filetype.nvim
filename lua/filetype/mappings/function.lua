@@ -279,7 +279,7 @@ M.extensions = {
         return detect.eiffel_check()
     end,
     ["d"] = function()
-        vim.cmd([[call dist#ft#DtraceCheck()]])
+        return detect.dtrace()
     end,
     ["com"] = function()
         vim.cmd([[call dist#ft#BindzoneCheck('dcl')]])
