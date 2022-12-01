@@ -34,6 +34,19 @@ function M.getlines_as_string(i, j, sep)
     return table.concat(M.getlines(i, j), sep)
 end
 
+--- Get the next non-whitespace line in the buffer.
+---
+---@param i number|nil The line number of the first line to start from (inclusive, 0-based)
+---@return string|nil The first non-blank line if found or `nil` otherwise
+function M.get_next_nonblank_line(i)
+    for _, line in ipairs(M.getlines(i)) do
+        if not line:find("^%s*$") then
+            return line
+        end
+    end
+    return nil
+end
+
 --- Check whether the given string matches the Vim regex pattern. It
 --- stores the patterns in a cache
 ---

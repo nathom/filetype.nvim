@@ -530,4 +530,33 @@ function M.r()
     return "r"
 end
 
+--- Distinguish between "default", Prolog and Cproto prototype file.
+--- Taken from vim.filetype.detect
+---
+--- @param default string|nil The default filetype for prototype files
+--- @return string|nil The filetype detected
+function M.proto(default)
+    -- Cproto files have a comment in the first line and a function prototype in
+    -- the second line, it always ends in ";".  Indent files may also have
+    -- comments, thus we can't match comments to see the difference.
+    -- IDL files can have a single ';' in the second line, require at least one
+    -- character before the ';'.
+    if util.getlines_as_string(0, 2, " "):find(".;$") then
+        return "cpp"
+    end
+
+    -- Recognize Prolog by specific text in the first non-empty line;
+    -- require a blank after the '%' because Perl uses "%list" and "%translate"
+    local line = util.get_next_nonblank_line()
+    if
+        line and line:find(":%-")
+        or util.match_vim_regex(line, [[\c\<prolog\>]])
+        or util.findany(line, { "^%s*%%+%s", "^%s*%%+$", "^%s*/%*" })
+    then
+        return "prolog"
+    end
+
+    return default
+end
+
 return M

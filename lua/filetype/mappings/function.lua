@@ -300,7 +300,7 @@ M.extensions = {
         vim.cmd([[call dist#ft#FTidl()]])
     end,
     ["pro"] = function()
-        vim.cmd([[call dist#ft#ProtoCheck('idlang')]])
+        return detect.proto("idlang")
     end,
     ["m"] = function()
         vim.cmd([[call dist#ft#FTm()]])
@@ -443,7 +443,7 @@ M.literal = {
         end
     end,
     ["indent.pro"] = function()
-        vim.cmd([[call dist#ft#ProtoCheck('indent')]])
+        return detect.proto("indent")
     end,
     [".bashrc"] = function()
         return detect.sh({ fallback = "bash" })
