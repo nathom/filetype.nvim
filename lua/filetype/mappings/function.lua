@@ -246,7 +246,7 @@ M.extensions = {
         return detect.asm()
     end,
     ["bas"] = function()
-        vim.cmd([[call dist#ft#FTVB("basic")]])
+        return detect.vbasic()
     end,
     ["btm"] = function()
         vim.cmd([[call dist#ft#FTbtm()]])
@@ -402,7 +402,7 @@ M.extensions = {
         vim.cmd([[call dist#ft#FTtex()]])
     end,
     ["frm"] = function()
-        vim.cmd([[call dist#ft#FTVB("form")]])
+        return detect.vbasic_form()
     end,
     ["xml"] = function()
         vim.cmd([[call dist#ft#FTxml()]])

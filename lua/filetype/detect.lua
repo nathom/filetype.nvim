@@ -284,4 +284,68 @@ function M.perl(file_path, file_ext)
     end
 end
 
+local visual_basic_markers = {
+    "vb_name",
+    "begin vb%.form",
+    "begin vb%.mdiform",
+    "begin vb%.usercontrol",
+}
+
+--- Read the first 100 lines to check for any hints to Basic filetype
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.vbasic()
+    if vim.g.filetype_bas then
+        return vim.g.filetype_bas
+    end
+
+    -- Most frequent FreeBASIC-specific keywords in distro files
+    local fb_keywords =
+        [[\c^\s*\%(extern\|var\|enum\|private\|scope\|union\|byref\|operator\|constructor\|delete\|namespace\|public\|property\|with\|destructor\|using\)\>\%(\s*[:=(]\)\@!]]
+    local fb_preproc =
+        [[\c^\s*\%(#\s*\a\+\|option\s\+\%(byval\|dynamic\|escape\|\%(no\)\=gosub\|nokeyword\|private\|static\)\>\|\%(''\|rem\)\s*\$lang\>\|def\%(byte\|longint\|short\|ubyte\|uint\|ulongint\|ushort\)\>\)]]
+
+    local fb_comment = "^%s*/'"
+    -- OPTION EXPLICIT, without the leading underscore, is common to many dialects
+    local qb64_preproc =
+        [[\c^\s*\%($\a\+\|option\s\+\%(_explicit\|_\=explicitarray\)\>\)]]
+
+    for _, line in ipairs(util.getlines(0, 100)) do
+        if util.findany(line:lower(), visual_basic_markers) then
+            return "vb"
+        end
+
+        if
+            line:find(fb_comment)
+            or util.match_vim_regex(line, fb_preproc)
+            or util.match_vim_regex(line, fb_keywords)
+        then
+            return "freebasic"
+        end
+
+        if util.match_vim_regex(line, qb64_preproc) then
+            return "qb64"
+        end
+    end
+    return "basic"
+end
+
+--- Read the first 100 lines to check for any hints to Basic form filetype
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.vbasic_form()
+    if vim.g.filetype_frm then
+        return vim.g.filetype_frm
+    end
+
+    local lines = table.concat(util.getlines(0, 5)):lower()
+    if util.findany(lines, visual_basic_markers) then
+        return "vb"
+    end
+
+    return "form"
+end
+
 return M
