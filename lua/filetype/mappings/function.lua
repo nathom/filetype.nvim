@@ -228,25 +228,25 @@ M.extensions = {
         vim.cmd([[call dist#ft#Check_inp()]])
     end,
     ["asm"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["s"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["S"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["a"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["A"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["mac"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["lst"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["bas"] = function()
         vim.cmd([[call dist#ft#FTVB("basic")]])

@@ -42,4 +42,11 @@ end
 --- @return integer(s) The byte indices for the beginning and end of the match
 M.match_vim_regex = vim.filetype.matchregex
 
+--- Check whether a string matches any of the given Lua patterns.
+---
+---@param s string The string to check
+---@param patterns table<string> A list of Lua patterns
+---@return boolean `true` if s matched a pattern, else `false`
+M.findany = vim.filetype.findany
+
 return M

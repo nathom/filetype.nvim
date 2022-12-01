@@ -153,4 +153,44 @@ function M.csh()
     return M.sh({ fallback = fallback, force_shebang_check = true })
 end
 
+--- This function checks for the kind of assembly that is wanted by the user, or
+--- can be detected from the first five lines of the file.
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.asm()
+    local syntax = vim.b.asmsyntax
+    if not syntax or syntax == "" then
+        syntax = M.asm_syntax()
+    end
+
+    vim.b.asmsyntax = syntax
+    return syntax
+end
+
+--- Checks the first 5 lines for a asmsyntax=foo override.
+--- Only whitespace characters can be present immediately before or after this statement.
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype or g:asmsyntax or "asm"
+function M.asm_syntax()
+    local lines = " " .. util.getlines_as_string(0, 5, " "):lower() .. " "
+    local match = lines:match("%sasmsyntax=([a-zA-Z0-9]+)%s")
+    if match then
+        return match
+    end
+
+    if
+        util.findany(
+            lines,
+            { "%.title", "%.ident", "%.macro", "%.subtitle", "%.library" }
+        )
+    then
+        return "vmasm"
+    end
+
+    -- Defaults to g:asmsyntax or GNU
+    return (vim.g.asmsyntax ~= 0 and vim.g.asmsyntax) or "asm"
+end
+
 return M
