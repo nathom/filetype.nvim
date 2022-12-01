@@ -237,7 +237,7 @@ M.extensions = {
         return detect.header()
     end,
     ["ch"] = function()
-        vim.cmd([[call dist#ft#FTchange()]])
+        return detect.change()
     end,
     ["ex"] = function()
         return detect.elixir_check()

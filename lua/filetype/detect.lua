@@ -640,4 +640,34 @@ function M.header()
     return "cpp"
 end
 
+--- This function checks:
+---     1. If one of the first ten lines start with a '@'. In that case it is
+---        probably a change file.
+---     2. If the first line starts with # or ! it's probably a ch file.
+---     3. If a line has "main", "include", "//" or "/*" it's probably ch.
+---     4. Otherwise CHILL is assumed.
+--- @return string The detected filetype
+function M.change()
+    local first_line = util.getline()
+    if util.findany(first_line, { "^#", "^!" }) then
+        return "ch"
+    end
+
+    for _, line in ipairs(util.getlines(0, 10)) do
+        if line:find("^@") then
+            return "change"
+        end
+
+        if line:find("MODULE") then
+            return "chill"
+        end
+
+        if util.findany(line:lower(), { "main%s*%(", "#%s*include", "//" }) then
+            return "ch"
+        end
+    end
+
+    return "chill"
+end
+
 return M
