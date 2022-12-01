@@ -372,7 +372,7 @@ M.extensions = {
         vim.cmd([[call dist#ft#FTRules()]])
     end,
     ["sql"] = function()
-        vim.cmd([[call dist#ft#SQL()]])
+        return detect.sql()
     end,
     ["tex"] = function()
         vim.cmd([[call dist#ft#FTtex()]])
@@ -396,7 +396,7 @@ M.extensions = {
         return detect.html()
     end,
     ["zsql"] = function()
-        vim.cmd([[call dist#ft#SQL()]])
+        return detect.sql()
     end,
 }
 M.literal = {

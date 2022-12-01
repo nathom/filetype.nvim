@@ -418,4 +418,16 @@ function M.xml()
     return "xml"
 end
 
+--- Return either the user defined sql filetype or not
+--- Taken from dist#ft
+---
+--- @return string The detected filetype
+function M.sql()
+    if vim.g.filetype_sql then
+        return vim.g.filetype_sql
+    end
+
+    return "sql"
+end
+
 return M
