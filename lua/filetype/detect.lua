@@ -430,4 +430,71 @@ function M.sql()
     return "sql"
 end
 
+--- Choose context, plaintex, or tex (LaTeX) based on these rules:
+---     1. Check the first line of the file for "%&<format>".
+---     2. Check the first 1000 non-comment lines for LaTeX or ConTeXt keywords.
+---     3. Default to "plain" or to g:tex_flavor, can be set in user's vimrc.
+--- Taken from vim.filetype.detect
+---
+--- @param file_path string The absolute path of the file
+--- @return string The detected filetype
+function M.tex(file_path)
+    local format = M.getline():find("^%%&%s*(%a+)")
+    if format then
+        format = format:lower():gsub("pdf", "", 1)
+        if format == "tex" then
+            return "tex"
+        end
+
+        if format == "plaintex" then
+            return "plaintex"
+        end
+    end
+
+    -- Early guarantee that the fileytpe is context
+    if file_path:lower():find("tex/context/.*/.*%.tex") then
+        return "context"
+    end
+
+    local latex_pat =
+        [[documentclass\>\|usepackage\>\|begin{\|newcommand\>\|renewcommand\>]]
+    local context_pat =
+        [[start\a\+\|setup\a\+\|usemodule\|enablemode\|enableregime\|setvariables\|useencoding\|usesymbols\|stelle\a\+\|verwende\a\+\|stel\a\+\|gebruik\a\+\|usa\a\+\|imposta\a\+\|regle\a\+\|utilisemodule\>]]
+    for i, l in ipairs(util.getlines(0, 1000)) do
+        -- Skip comments
+        if l:find("^%s*%%%S") then
+            goto continue
+        end
+
+        -- Check the next thousand lines for a LaTeX or ConTeXt keyword.
+        for _, line in ipairs(util.getlines(i, i + 1000)) do
+            local lpat_match, cpat_match = util.match_vim_regex(
+                line,
+                [[\c^\s*\\\%(]] .. latex_pat .. [[\)\|^\s*\\\(]] .. context_pat .. [[\)]]
+            )
+
+            if lpat_match then
+                return "tex"
+            end
+            if cpat_match then
+                return "context"
+            end
+        end
+
+        ::continue::
+    end
+
+    -- TODO: add AMSTeX, RevTex, others?
+    if not vim.g.tex_flavor or vim.g.tex_flavor == "plain" then
+        return "plaintex"
+    end
+
+    if vim.g.tex_flavor == "context" then
+        return "context"
+    end
+
+    -- Probably LaTeX
+    return "tex"
+end
+
 return M

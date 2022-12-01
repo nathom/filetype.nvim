@@ -103,6 +103,7 @@ M.complex = {
     ["named.*%.conf"] = "named",
     ["rndc.*%.conf"] = "named",
     ["rndc.*%.key"] = "named",
+    [".*/tex/context/.*/.*%.tex"] = "context",
 }
 
 -- These require a special set_ft function

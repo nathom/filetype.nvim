@@ -374,8 +374,8 @@ M.extensions = {
     ["sql"] = function()
         return detect.sql()
     end,
-    ["tex"] = function()
-        vim.cmd([[call dist#ft#FTtex()]])
+    ["tex"] = function(args)
+        return detect.tex(args.file_path)
     end,
     ["frm"] = function()
         return detect.vbasic_form()
