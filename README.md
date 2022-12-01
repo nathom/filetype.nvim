@@ -13,7 +13,7 @@ creating [800+ of them](https://github.com/vim/vim/blob/master/runtime/filetype.
 As you can see, `filetype.vim` is by far the heaviest nvim runtime file
 
 ```diff
-13.782    [runtime] 
+13.782    [runtime]
 -	9.144     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/filetype.vim
 	1.662     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/plugin/matchit.vim
 	0.459     /usr/local/Cellar/neovim/0.5.0/share/nvim/runtime/syntax/synload.vim
@@ -103,10 +103,42 @@ require("filetype").setup({
             end,
         },
 
+        -- Force check the first line of the file for a shebang if default_filetype is set
+        force_shebang_check = true, -- default is false
+
+        -- Check if the entirety of the shell file for a hint of the executable being used;
+        -- currently only checks for `tclsh`
+        check_sh_contents = true, -- default is false
+
+        -- The default behaviour when a shebang is detected is to set the filetype to binary
+        -- used unless the there is mapping from the binary name to filetype defined.
+        -- You can define your own mapping here
         shebang = {
             -- Set the filetype of files with a dash shebang to sh
             dash = "sh",
+
+            -- You don't need to define mappings where the binary name matches the filetype
+            gnuplot = "gnuplot" -- this is unnecessary
+
+            -- Execute code when a python shebang is detected
+            -- Version numbers at the end of binary names and the env binary are ignored:
+            --     => #!/bin/python2 = #!/bin/python3 = #!/bin/python = #!/bin/env python = python
+            python = {
+                filetype = "python", -- Required if you override the default mapping
+                on_detect = function()
+                    vim.bo.expandtab = false
+                end,
+            },
+
+            -- Binary names must end in an alpha character and not contain a space
+            -- to be correctly identified
+            ["my-sh_interpeter"] = "sh",
+            ["my-sh_interpeter-Ver2"] = "sh", -- This won't work even if it is the actual binary name
+            ["bash --posix"] = "sh",          -- Neither would this
         },
+
+        -- Set a default filetype in the case no matching filetype is detected
+        default_filetype = 'foo',
     },
 })
 ```
@@ -126,12 +158,12 @@ Average startup time (100 rounds): **36.410 ms**
 
 <details>
 <summary>Sample log</summary>
-  
+
   ```diff
   times in msec
    clock   self+sourced   self:  sourced script
    clock   elapsed:              other lines
-  
+
   000.008  000.008: --- NVIM STARTING ---
   000.827  000.819: locale set
   001.304  000.477: inits 1
@@ -229,12 +261,12 @@ Average startup time (100 rounds): **26.492 ms**
 
 <details>
   <summary>Sample log</summary>
-  
+
   ```diff
     times in msec
    clock   self+sourced   self:  sourced script
    clock   elapsed:              other lines
-  
+
   000.008  000.008: --- NVIM STARTING ---
   000.813  000.805: locale set
   001.282  000.470: inits 1

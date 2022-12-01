@@ -1,3 +1,5 @@
+local detect = require("filetype.detect")
+
 -- generate the filetype
 local custom_map = nil
 
@@ -68,28 +70,6 @@ local function try_lookup(query, map)
     return false
 end
 
--- Check the first line in the buffer for a shebang
--- If there is one, set the filetype appropriately
-local function analyze_shebang()
-    local fstline = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
-    if fstline then
-        return fstline:match("#!%s*/usr/bin/env%s+(%S+)")
-            or fstline:match("#!%s*/%S+/([^ /]+)")
-    end
-
-    return false
-end
-
--- Return the value of map.shebang[s]; that is the value of the field indexed
--- by the value of s in map.shebang. This could be nil.
-local function shebang_from_map(s, map)
-    -- Avoid indexing nil.
-    if map and map.shebang then
-        return map.shebang[s]
-    end
-    return false
-end
-
 local M = {}
 
 function M.setup(opts)
@@ -97,6 +77,7 @@ function M.setup(opts)
         custom_map = opts.overrides
     end
 end
+
 function M.resolve()
     -- Just in case
     vim.g.did_load_filetypes = 1
@@ -113,6 +94,9 @@ function M.resolve()
 
     local filename = absolute_path:match(".*[\\/](.*)")
     local ext = filename:match(".+%.(%w+)")
+
+    -- Used at the end if no filetype is detected or an extension isn't available
+    local detect_sh_args
 
     -- Try to match the custom defined filetypes
     if custom_map ~= nil then
@@ -149,9 +133,15 @@ function M.resolve()
             return
         end
 
-        -- if try_filetype_map(absolute_path, filename, ext, custom_map) then
-        --     return
-        -- end
+        -- Extend the shebang_map with users map and override already existing
+        -- values
+        for binary, ft in pairs(custom_map.shebang) do
+            detect.shebang[binary] = ft
+        end
+
+        detect_sh_args.fallback = custom_map.default_filetype
+        detect_sh_args.force_shebang_check = custom_map.force_shebang_check
+        detect_sh_args.check_contents = custom_map.check_sh_contents
     end
 
     local extension_map = require("filetype.mappings.extensions")
@@ -198,21 +188,8 @@ function M.resolve()
     -- that. Look for a shebang override in custom_map first. If there is none,
     -- check the default shebangs defined in function_maps. Otherwise, default
     -- to setting the filetype to the value of shebang itself.
-    local shebang = analyze_shebang()
-    if shebang then
-        shebang = shebang_from_map(shebang, custom_map)
-            or function_maps.shebang[shebang]
-            or shebang
-        set_filetype(shebang)
-        local mapped_shebang
-        if custom_map and custom_map.shebang then
-            mapped_shebang = custom_map.shebang[shebang]
-        end
-        mapped_shebang = mapped_shebang
-            or function_maps.shebang[shebang]
-            or shebang
-        set_filetype(mapped_shebang)
-    end
+    local ft = detect.sh(detect_sh_args)
+    set_filetype(ft)
 end
 
 return M
