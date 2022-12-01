@@ -393,7 +393,7 @@ M.extensions = {
         return detect.sh({ fallback = "tcsh" })
     end,
     ["csh"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["rules"] = function()
         vim.cmd([[call dist#ft#FTRules()]])
@@ -503,22 +503,22 @@ M.literal = {
         return detect.sh({ fallback = "tcsh" })
     end,
     [".login"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     [".cshrc"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["csh.cshrc"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["csh.login"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["csh.logout"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     [".alias"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     [".d"] = function()
         return detect.sh({ fallback = "bash" })
@@ -576,10 +576,10 @@ M.complex = {
         return detect.sh({ fallback = "tcsh" })
     end,
     ["%.login.*"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["%.cshrc.*"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
 }
 

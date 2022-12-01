@@ -130,4 +130,27 @@ function M.shell(name, contents)
     return name
 end
 
+--- The function tries to determine which csh varient is this filetype. The
+--- function still checks if shebang matches or not
+--- Taken from vim.filetype.detect
+---
+--- @return string|nil The detected filetype
+function M.csh()
+    if vim.fn.did_filetype() ~= 0 then
+        -- Filetype was already detected
+        return
+    end
+
+    local fallback
+    if vim.g.filetype_csh then
+        fallback = vim.g.filetype_csh
+    elseif string.find(vim.o.shell, "tcsh") then
+        fallback = "tcsh"
+    else
+        fallback = "csh"
+    end
+
+    return M.sh({ fallback = fallback, force_shebang_check = true })
+end
+
 return M
