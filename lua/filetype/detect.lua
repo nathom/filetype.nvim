@@ -348,4 +348,22 @@ function M.vbasic_form()
     return "form"
 end
 
+--- Read the first 10 lines to check for any hints
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.html()
+    for _, line in ipairs(util.getlines(0, 10)) do
+        if util.match_vim_regex(line, [[\<DTD\s\+XHTML\s]]) then
+            return "xhtml"
+        end
+
+        if util.match_vim_regex( line, [[\c{%\s*\(extends\|block\|load\)\>\|{#\s\+]]) then
+            return "htmldjango"
+        end
+    end
+
+    return "html"
+end
+
 return M

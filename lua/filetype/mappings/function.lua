@@ -309,16 +309,16 @@ M.extensions = {
         vim.cmd([[call dist#ft#BindzoneCheck('dcl')]])
     end,
     ["html"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["htm"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["shtml"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["stm"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["idl"] = function()
         vim.cmd([[call dist#ft#FTidl()]])
@@ -411,13 +411,13 @@ M.extensions = {
         vim.cmd([[call dist#ft#FTy()]])
     end,
     ["dtml"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["pt"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["cpt"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["zsql"] = function()
         vim.cmd([[call dist#ft#SQL()]])
