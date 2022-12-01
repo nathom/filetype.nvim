@@ -670,4 +670,17 @@ function M.change()
     return "chill"
 end
 
+--- This function checks the first 50 lines for msidl hints
+---
+--- @return string The detected filetype
+function M.idl()
+    for _, line in ipairs(util.getlines(0, 50)) do
+        if util.findany(line:lower(), { '^%s*import%s+"unknwn"%.idl', '^%s*import%s+"objidl"%.idl' }) then
+            return "msidl"
+        end
+    end
+
+    return "idl"
+end
+
 return M

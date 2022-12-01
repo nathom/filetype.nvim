@@ -297,7 +297,7 @@ M.extensions = {
         return detect.html()
     end,
     ["idl"] = function()
-        vim.cmd([[call dist#ft#FTidl()]])
+        return detect.idl()
     end,
     ["pro"] = function()
         return detect.proto("idlang")
