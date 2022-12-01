@@ -333,10 +333,10 @@ M.extensions = {
         vim.cmd([[call dist#ft#FTprogress_pascal()]])
     end,
     ["r"] = function()
-        vim.cmd([[call dist#ft#FTr()]])
+        return detect.r()
     end,
     ["R"] = function()
-        vim.cmd([[call dist#ft#FTr()]])
+        return detect.r()
     end,
     ["mc"] = function()
         vim.cmd([[call dist#ft#McSetf()]])

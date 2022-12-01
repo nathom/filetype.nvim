@@ -497,4 +497,37 @@ function M.tex(file_path)
     return "tex"
 end
 
+--- Detect the flavor of R that is used.
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.r()
+    local lines = util.getlines(0, 50)
+    -- Rebol is easy to recognize, check for that first
+    if util.match_vim_regex(table.concat(lines), [[\c\<rebol\>]]) then
+        return "rebol"
+    end
+
+    -- Check for comment style
+    for _, line in ipairs(lines) do
+        -- R has # comments
+        if line:find("^%s*#") then
+            return "r"
+        end
+
+        -- Rexx has /* comments */
+        if line:find("^%s*/%*") then
+            return "rexx"
+        end
+    end
+
+    -- Nothing recognized, use user default or assume R
+    if vim.g.filetype_r then
+        return vim.g.filetype_r
+    end
+
+    -- Rexx used to be the default, but R appears to be much more popular.
+    return "r"
+end
+
 return M
