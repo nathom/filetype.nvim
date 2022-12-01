@@ -366,4 +366,56 @@ function M.html()
     return "html"
 end
 
+--- Checks if the line is a doc book or not
+--- Taken from vim.filetype.detect
+---
+--- @return string|nil The docbook filetype
+local function is_docbook(line, type)
+    local is_docbook4 = line:find("%<%!DOCTYPE.*DocBook")
+    local is_docbook5 = line:lower():find([[xmlns="http://docbook.org/ns/docbook"]])
+    if is_docbook4 or is_docbook5 then
+        vim.b.docbk_type = type
+        vim.b.docbk_ver = is_docbook4 and 4 or 5
+        return "docbk"
+    end
+end
+
+--- Read the first 100 lines to check for any hints on whether it's a dockbook file or not
+---
+--- @return string The detected filetype
+function M.sgml()
+    for _, line in ipairs(util.getlines(0, 100)) do
+        if line:find("linuxdoc") then
+            return "sgmlnx"
+        end
+
+        local ft = is_docbook(line, "sgml")
+        if ft then
+            return ft
+        end
+    end
+
+    return "sgml"
+end
+
+--- Read the first 100 lines to check for any hints on whether it's a dockbook or not file
+--- or a docbook
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.xml()
+    for _, line in ipairs(util.getlines(0, 100)) do
+        local ft = is_docbook(line, "sgml")
+        if ft then
+            return ft
+        end
+
+        if line:find([[xmlns:xbl="http://www.mozilla.org/xbl"]]) then
+            return "xbl"
+        end
+    end
+
+    return "xml"
+end
+
 return M

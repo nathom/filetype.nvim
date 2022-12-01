@@ -94,34 +94,10 @@ M.extensions = {
         end
     end,
     ["sgm"] = function()
-        local top_file = util.getlines(0, 5)
-        if top_file:find("linuxdoc") then
-            return "sgmlnx"
-        elseif
-            util.getline():find("%<%!DOCTYPE.*DocBook")
-            or util.getline(1):find("<!DOCTYPE.*DocBook")
-        then
-            vim.b.docbk_type = "sgml"
-            vim.b.docbk_ver = 4
-            return "docbk"
-        else
-            return "sgml"
-        end
+        return detect.sgml()
     end,
     ["sgml"] = function()
-        local top_file = util.getlines(0, 5)
-        if top_file:find("linuxdoc") then
-            return "sgmlnx"
-        elseif
-            util.getline():find("%<%!DOCTYPE.*DocBook")
-            or util.getlines_as_string(0, 5, " "):find("<!DOCTYPE.*DocBook")
-        then
-            vim.b.docbk_type = "sgml"
-            vim.b.docbk_ver = 4
-            return "docbk"
-        else
-            return "sgml"
-        end
+        return detect.sgml()
     end,
     ["reg"] = function()
         if
@@ -405,7 +381,7 @@ M.extensions = {
         return detect.vbasic_form()
     end,
     ["xml"] = function()
-        vim.cmd([[call dist#ft#FTxml()]])
+        return detect.xml()
     end,
     ["y"] = function()
         vim.cmd([[call dist#ft#FTy()]])
