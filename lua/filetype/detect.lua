@@ -244,4 +244,44 @@ function M.elixir_check()
     return "elixir"
 end
 
+--- This function checks if one of the first five lines start with a dot. In
+--- that case it is probably an nroff file.
+--- Taken from vim.filetype.detect
+---
+--- @return string|nil The detected filetype
+function M.nroff()
+    for _, line in ipairs(util.getlines(0, 5)) do
+        if line:find("^%.") then
+            return "nroff"
+        end
+    end
+end
+
+--- If the file has an extension of 't' and is in a directory 't' or 'xt' then
+--- it is almost certainly a Perl test file.
+--- If the first line starts with '#' and contains 'perl' it's probably a Perl file.
+--- (Slow test) If a file contains a 'use' statement then it is almost certainly a Perl file.
+--- Taken from vim.filetype.detect
+---
+--- @param file_path string|nil The absolute path to the file
+--- @param file_ext string|nil The file extension
+--- @return string|nil The detected filetype
+function M.perl(file_path, file_ext)
+    local dir_name = vim.fs.dirname(file_path)
+    if file_ext == "t" and (dir_name == "t" or dir_name == "xt") then
+        return "perl"
+    end
+
+    local first_line = util.getline()
+    if first_line:find("^#") and first_line:lower():find("perl") then
+        return M.sh({ fallback = "perl" })
+    end
+
+    for _, line in ipairs(util.getlines(0, 30)) do
+        if util.match_vim_regex(line, [[\c^use\s\s*\k]]) then
+            return "perl"
+        end
+    end
+end
+
 return M

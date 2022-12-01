@@ -5,7 +5,7 @@ local M = {}
 
 M.extensions = {
     ["ms"] = function()
-        vim.cmd([[if !dist#ft#FTnroff() | setf xmath | endif]])
+        return detect.nroff() or "xmath"
     end,
     ["xpm"] = function()
         if util.getline():find("XPM2") then
@@ -47,11 +47,8 @@ M.extensions = {
             return "stata"
         end
     end,
-    ["t"] = function()
-        -- Don't know how to translate this :(
-        vim.cmd(
-            [[if !dist#ft#FTnroff() && !dist#ft#FTperl() | setf tads | endif]]
-        )
+    ["t"] = function(args)
+        return detect.nroff() or detect.perl(args.file_path, args.file_ext) or "tads"
     end,
     ["class"] = function()
         -- Decimal escape sequence
