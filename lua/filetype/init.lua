@@ -11,17 +11,28 @@ local function setf(filetype)
     end
 end
 
+-- Arguments to pass to function callbacks.
+-- The argements should be set when the resolve function is called
+local callback_args = {
+    file_path = "",
+    file_name = "",
+    file_ext = "",
+}
+
 local function set_filetype(name)
     if type(name) == "string" then
         setf(name)
         return true
-    elseif type(name) == "function" then
-        local result = name()
+    end
+
+    if type(name) == "function" then
+        local result = name(callback_args)
         if type(result) == "string" then
             setf(result)
             return true
         end
     end
+
     return false
 end
 
@@ -47,13 +58,10 @@ local function try_regex(absolute_path, maps, star_set)
     for regexp, ft in pairs(maps) do
         if absolute_path:find(regexp) then
             if star_set then
-                if star_set_filetype(ft) then
-                    return true
-                end
-            else
-                set_filetype(ft)
-                return true
+                return star_set_filetype(ft)
             end
+
+            return set_filetype(ft)
         end
     end
     return false
@@ -64,8 +72,7 @@ local function try_lookup(query, map)
         return false
     end
     if map[query] ~= nil then
-        set_filetype(map[query])
-        return true
+        return set_filetype(map[query])
     end
     return false
 end
@@ -82,18 +89,18 @@ function M.resolve()
     -- Just in case
     vim.g.did_load_filetypes = 1
 
-    local absolute_path = vim.api.nvim_buf_get_name(0)
+    callback_args.file_path = vim.api.nvim_buf_get_name(0)
 
     if vim.bo.filetype == "bqfpreview" then
-        absolute_path = vim.fn.expand("<amatch>")
+        callback_args.file_path = vim.fn.expand("<amatch>")
     end
 
-    if #absolute_path == 0 then
+    if #callback_args.file_path == 0 then
         return
     end
 
-    local filename = absolute_path:match(".*[\\/](.*)")
-    local ext = filename:match(".+%.(%w+)")
+    callback_args.file_name = callback_args.file_path:match(".*[\\/](.*)")
+    callback_args.file_ext = callback_args.file_name:match(".+%.(%w+)")
 
     -- Used at the end if no filetype is detected or an extension isn't available
     local detect_sh_args
@@ -101,35 +108,35 @@ function M.resolve()
     -- Try to match the custom defined filetypes
     if custom_map ~= nil then
         -- Avoid indexing nil
-        if try_lookup(ext, custom_map.extensions) then
+        if try_lookup(callback_args.file_ext, custom_map.extensions) then
             return
         end
 
-        if try_lookup(filename, custom_map.literal) then
+        if try_lookup(callback_args.file_name, custom_map.literal) then
             return
         end
 
-        if try_lookup(ext, custom_map.function_extensions) then
+        if try_lookup(callback_args.file_ext, custom_map.function_extensions) then
             return
         end
 
-        if try_lookup(filename, custom_map.function_literal) then
+        if try_lookup(callback_args.file_name, custom_map.function_literal) then
             return
         end
 
-        if try_regex(absolute_path, custom_map.endswith) then
+        if try_regex(callback_args.file_path, custom_map.endswith) then
             return
         end
 
-        if try_regex(absolute_path, custom_map.complex) then
+        if try_regex(callback_args.file_path, custom_map.complex) then
             return
         end
 
-        if try_regex(absolute_path, custom_map.function_complex) then
+        if try_regex(callback_args.file_path, custom_map.function_complex) then
             return
         end
 
-        if try_regex(absolute_path, custom_map.star_sets, true) then
+        if try_regex(callback_args.file_path, custom_map.star_sets, true) then
             return
         end
 
@@ -145,42 +152,41 @@ function M.resolve()
     end
 
     local extension_map = require("filetype.mappings.extensions")
-    if try_lookup(ext, extension_map) then
+    if try_lookup(callback_args.file_ext, extension_map) then
         return
     end
 
     local literal_map = require("filetype.mappings.literal")
-    if try_lookup(filename, literal_map) then
+    if try_lookup(callback_args.file_name, literal_map) then
         return
     end
 
     local function_maps = require("filetype.mappings.function")
-    if try_lookup(ext, function_maps.extensions) then
+    if try_lookup(callback_args.file_ext, function_maps.extensions) then
         return
     end
-    if try_lookup(filename, function_maps.literal) then
+    if try_lookup(callback_args.file_name, function_maps.literal) then
         return
     end
 
-    if try_regex(absolute_path, function_maps.complex) then
+    if try_regex(callback_args.file_path, function_maps.complex) then
         return
     end
 
     local complex_maps = require("filetype.mappings.complex")
-    if try_regex(absolute_path, complex_maps.endswith) then
+    if try_regex(callback_args.file_path, complex_maps.endswith) then
         return
     end
-    if try_regex(absolute_path, complex_maps.complex) then
+    if try_regex(callback_args.file_path, complex_maps.complex) then
         return
     end
-    if try_regex(absolute_path, complex_maps.star_sets, true) then
+    if try_regex(callback_args.file_path, complex_maps.star_sets, true) then
         return
     end
 
     -- At this point, no filetype has been detected
     -- so let's just default to the extension, if it has one
-    if ext then
-        set_filetype(ext)
+    if callback_args.file_ext and set_filetype(callback_args.file_ext) then
         return
     end
 
@@ -188,8 +194,7 @@ function M.resolve()
     -- that. Look for a shebang override in custom_map first. If there is none,
     -- check the default shebangs defined in function_maps. Otherwise, default
     -- to setting the filetype to the value of shebang itself.
-    local ft = detect.sh(detect_sh_args)
-    set_filetype(ft)
+    set_filetype(detect.sh(detect_sh_args))
 end
 
 return M
