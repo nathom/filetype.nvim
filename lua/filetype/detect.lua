@@ -583,4 +583,61 @@ function M.dtrace()
     return "d"
 end
 
+--- Check for lpc syntax if the user specifies g:lpc_syntax_for_c
+--- Taken from vim.filetype.detect
+---
+--- @return string The filetype detected
+function M.lpc()
+    if not vim.g.lpc_syntax_for_c then
+        return "c"
+    end
+
+    for _, line in ipairs(util.getlines(0, 12)) do
+        if
+            util.findany(line, {
+                "^//",
+                "^inherit",
+                "^private",
+                "^protected",
+                "^nosave",
+                "^string",
+                "^object",
+                "^mapping",
+                "^mixed",
+            })
+        then
+            return "lpc"
+        end
+    end
+
+    return "c"
+end
+
+--- Distinguish between different header files
+--- Taken from vim.filetype.detect
+---
+--- @return string The filetype detected
+function M.header()
+    -- Check the file contents for objective c hints
+    for _, line in ipairs(util.getlines(0, 200)) do
+        if util.findany(line:lower(), { "^@interface", "^@end", "^@class" }) then
+            if vim.g.c_syntax_for_h then
+                return "objc"
+            end
+
+            return "objcpp"
+        end
+    end
+
+    if vim.g.c_syntax_for_h then
+        return "c"
+    end
+
+    if vim.g.ch_syntax_for_h then
+        return "ch"
+    end
+
+    return "cpp"
+end
+
 return M

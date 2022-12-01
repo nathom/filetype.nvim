@@ -231,10 +231,10 @@ M.extensions = {
         vim.cmd([[call dist#ft#BindzoneCheck('')]])
     end,
     ["c"] = function()
-        vim.cmd([[call dist#ft#FTlpc()]])
+        return detect.lpc()
     end,
     ["h"] = function()
-        vim.cmd([[call dist#ft#FTheader()]])
+        return detect.header()
     end,
     ["ch"] = function()
         vim.cmd([[call dist#ft#FTchange()]])
