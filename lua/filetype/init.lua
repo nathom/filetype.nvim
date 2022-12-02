@@ -116,11 +116,15 @@ function M.resolve()
             return
         end
 
-        if try_lookup(callback_args.file_ext, custom_map.function_extensions) then
+        if
+            try_lookup(callback_args.file_ext, custom_map.function_extensions)
+        then
             return
         end
 
-        if try_lookup(callback_args.file_name, custom_map.function_literal) then
+        if
+            try_lookup(callback_args.file_name, custom_map.function_literal)
+        then
             return
         end
 

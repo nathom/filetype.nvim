@@ -48,7 +48,9 @@ M.extensions = {
         end
     end,
     ["t"] = function(args)
-        return detect.nroff() or detect.perl(args.file_path, args.file_ext) or "tads"
+        return detect.nroff()
+            or detect.perl(args.file_path, args.file_ext)
+            or "tads"
     end,
     ["class"] = function()
         -- Decimal escape sequence
@@ -198,7 +200,7 @@ M.extensions = {
         end
     end,
     ["inp"] = function()
-        vim.cmd([[call dist#ft#Check_inp()]])
+        return detect.inp()
     end,
     ["asm"] = function()
         return detect.asm()
@@ -225,10 +227,17 @@ M.extensions = {
         return detect.vbasic()
     end,
     ["btm"] = function()
-        vim.cmd([[call dist#ft#FTbtm()]])
+        if
+            vim.fn.exists("g:dosbatch_syntax_for_btm") == 1
+            and vim.g.dosbatch_syntax_for_btm ~= 0
+        then
+            return "dosbatch"
+        end
+
+        return "btm"
     end,
     ["db"] = function()
-        vim.cmd([[call dist#ft#BindzoneCheck('')]])
+        return detect.bindzone()
     end,
     ["c"] = function()
         return detect.lpc()
@@ -282,7 +291,7 @@ M.extensions = {
         return detect.dtrace()
     end,
     ["com"] = function()
-        vim.cmd([[call dist#ft#BindzoneCheck('dcl')]])
+        return detect.bindzone() or "dcl"
     end,
     ["html"] = function()
         return detect.html()
@@ -300,37 +309,37 @@ M.extensions = {
         return detect.idl()
     end,
     ["pro"] = function()
-        return detect.proto("idlang")
+        return detect.proto() or "idlang"
     end,
     ["m"] = function()
-        vim.cmd([[call dist#ft#FTm()]])
+        return detect.m()
+    end,
+    ["mm"] = function()
+        return detect.mm()
     end,
     ["mms"] = function()
-        vim.cmd([[call dist#ft#FTmms()]])
-    end,
-    ["*.mm"] = function()
-        vim.cmd([[call dist#ft#FTmm()]])
+        return detect.mms()
     end,
     ["pp"] = function()
-        vim.cmd([[call dist#ft#FTpp()]])
+        return detect.pp()
     end,
     ["pl"] = function()
-        vim.cmd([[call dist#ft#FTpl()]])
+        return detect.pl()
     end,
     ["PL"] = function()
-        vim.cmd([[call dist#ft#FTpl()]])
+        return detect.pl()
     end,
     ["inc"] = function()
-        vim.cmd([[call dist#ft#FTinc()]])
+        return detect.inc()
     end,
     ["w"] = function()
-        vim.cmd([[call dist#ft#FTprogress_cweb()]])
+        return detect.progress_cweb()
     end,
     ["i"] = function()
-        vim.cmd([[call dist#ft#FTprogress_asm()]])
+        return detect.progress_asm()
     end,
     ["p"] = function()
-        vim.cmd([[call dist#ft#FTprogress_pascal()]])
+        return detect.progress_pascal()
     end,
     ["r"] = function()
         return detect.r()
@@ -339,7 +348,7 @@ M.extensions = {
         return detect.r()
     end,
     ["mc"] = function()
-        vim.cmd([[call dist#ft#McSetf()]])
+        return detect.mc()
     end,
     ["ebuild"] = function()
         return detect.sh({ fallback = "bash" })
@@ -368,8 +377,8 @@ M.extensions = {
     ["csh"] = function()
         return detect.csh()
     end,
-    ["rules"] = function()
-        vim.cmd([[call dist#ft#FTRules()]])
+    ["rules"] = function(args)
+        return detect.rules(args.file_path)
     end,
     ["sql"] = function()
         return detect.sql()
@@ -384,7 +393,7 @@ M.extensions = {
         return detect.xml()
     end,
     ["y"] = function()
-        vim.cmd([[call dist#ft#FTy()]])
+        return detect.y()
     end,
     ["dtml"] = function()
         return detect.html()
@@ -443,7 +452,7 @@ M.literal = {
         end
     end,
     ["indent.pro"] = function()
-        return detect.proto("indent")
+        return detect.proto() or "indent"
     end,
     [".bashrc"] = function()
         return detect.sh({ fallback = "bash" })

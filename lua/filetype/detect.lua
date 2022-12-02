@@ -98,7 +98,8 @@ function M.analyze_shebang(shebang)
     -- The regex requires that all binaries end in an alpha character, so that
     -- the same shell with different version numbers as suffix are treated the same
     -- (python3 => python | zsh-5.9 => zsh | test-b#in_sh2 => test-b#in_sh )
-    return shebang:match("#!.*/env%s+([^/%s]*%a)") or shebang:match("#!.*/([^/%s]*%a)")
+    return shebang:match("#!.*/env%s+([^/%s]*%a)")
+        or shebang:match("#!.*/([^/%s]*%a)")
 end
 
 --- For shell-like file types, check for an "exec" command hidden in a comment,
@@ -144,7 +145,9 @@ function M.csh()
     local fallback
     if vim.g.filetype_csh then
         fallback = vim.g.filetype_csh
-    elseif string.find(vim.o.shell, "tcsh") then
+    end
+
+    if string.find(vim.o.shell, "tcsh") then
         fallback = "tcsh"
     else
         fallback = "csh"
@@ -358,7 +361,12 @@ function M.html()
             return "xhtml"
         end
 
-        if util.match_vim_regex( line, [[\c{%\s*\(extends\|block\|load\)\>\|{#\s\+]]) then
+        if
+            util.match_vim_regex(
+                line,
+                [[\c{%\s*\(extends\|block\|load\)\>\|{#\s\+]]
+            )
+        then
             return "htmldjango"
         end
     end
@@ -372,7 +380,8 @@ end
 --- @return string|nil The docbook filetype
 local function is_docbook(line, type)
     local is_docbook4 = line:find("%<%!DOCTYPE.*DocBook")
-    local is_docbook5 = line:lower():find([[xmlns="http://docbook.org/ns/docbook"]])
+    local is_docbook5 = line:lower()
+        :find([[xmlns="http://docbook.org/ns/docbook"]])
     if is_docbook4 or is_docbook5 then
         vim.b.docbk_type = type
         vim.b.docbk_ver = is_docbook4 and 4 or 5
@@ -470,7 +479,11 @@ function M.tex(file_path)
         for _, line in ipairs(util.getlines(i, i + 1000)) do
             local lpat_match, cpat_match = util.match_vim_regex(
                 line,
-                [[\c^\s*\\\%(]] .. latex_pat .. [[\)\|^\s*\\\(]] .. context_pat .. [[\)]]
+                [[\c^\s*\\\%(]]
+                    .. latex_pat
+                    .. [[\)\|^\s*\\\(]]
+                    .. context_pat
+                    .. [[\)]]
             )
 
             if lpat_match then
@@ -530,12 +543,11 @@ function M.r()
     return "r"
 end
 
---- Distinguish between "default", Prolog and Cproto prototype file.
+--- Distinguish between Prolog and Cproto prototype file.
 --- Taken from vim.filetype.detect
 ---
---- @param default string|nil The default filetype for prototype files
 --- @return string|nil The filetype detected
-function M.proto(default)
+function M.proto()
     -- Cproto files have a comment in the first line and a function prototype in
     -- the second line, it always ends in ";".  Indent files may also have
     -- comments, thus we can't match comments to see the difference.
@@ -555,8 +567,6 @@ function M.proto(default)
     then
         return "prolog"
     end
-
-    return default
 end
 
 --- Distinguish between dtrace and d files
@@ -575,7 +585,12 @@ function M.dtrace()
             return "d"
         end
 
-        if util.findany(line, { "^#!%S+dtrace", "#pragma%s+D%s+option", ":%S-:%S-:" }) then
+        if
+            util.findany(
+                line,
+                { "^#!%S+dtrace", "#pragma%s+D%s+option", ":%S-:%S-:" }
+            )
+        then
             return "dtrace"
         end
     end
@@ -620,7 +635,9 @@ end
 function M.header()
     -- Check the file contents for objective c hints
     for _, line in ipairs(util.getlines(0, 200)) do
-        if util.findany(line:lower(), { "^@interface", "^@end", "^@class" }) then
+        if
+            util.findany(line:lower(), { "^@interface", "^@end", "^@class" })
+        then
             if vim.g.c_syntax_for_h then
                 return "objc"
             end
@@ -662,7 +679,9 @@ function M.change()
             return "chill"
         end
 
-        if util.findany(line:lower(), { "main%s*%(", "#%s*include", "//" }) then
+        if
+            util.findany(line:lower(), { "main%s*%(", "#%s*include", "//" })
+        then
             return "ch"
         end
     end
@@ -675,12 +694,425 @@ end
 --- @return string The detected filetype
 function M.idl()
     for _, line in ipairs(util.getlines(0, 50)) do
-        if util.findany(line:lower(), { '^%s*import%s+"unknwn"%.idl', '^%s*import%s+"objidl"%.idl' }) then
+        if
+            util.findany(
+                line:lower(),
+                { '^%s*import%s+"unknwn"%.idl', '^%s*import%s+"objidl"%.idl' }
+            )
+        then
             return "msidl"
         end
     end
 
     return "idl"
+end
+
+--- Diffrentiate between matlab, octave, objective c, and other filetypes
+--- Taken from vim.filetype.detect
+---
+--- @return string the Detected filetype
+function M.m()
+    if vim.g.filetype_m then
+        return vim.g.filetype_m
+    end
+
+    -- Excluding end(for|function|if|switch|while) common to Murphi
+    local octave_block_terminators =
+        [[\<end\%(_try_catch\|classdef\|enumeration\|events\|methods\|parfor\|properties\)\>]]
+    local objc_preprocessor =
+        [[\c^\s*#\s*\%(import\|include\|define\|if\|ifn\=def\|undef\|line\|error\|pragma\)\>]]
+
+    -- Whether we've seen a multiline comment leader
+    local saw_comment = false
+    for _, line in ipairs(util.getlines(0, 100)) do
+        if line:find("^%s*/%*") then
+            -- /* ... */ is a comment in Objective C and Murphi, so we can't conclude
+            -- it's either of them yet, but track this as a hint in case we don't see
+            -- anything more definitive.
+            saw_comment = true
+        end
+
+        if
+            line:find("^%s*//")
+            or util.match_vim_regex(line, [[\c^\s*@import\>]])
+            or util.match_vim_regex(line, objc_preprocessor)
+        then
+            return "objc"
+        end
+
+        if
+            util.findany(line, { "^%s*#", "^%s*%%!" })
+            or util.match_vim_regex(line, [[\c^\s*unwind_protect\>]])
+            or util.match_vim_regex(
+                line,
+                [[\c\%(^\|;\)\s*]] .. octave_block_terminators
+            )
+        then
+            return "octave"
+        end
+
+        if line:find("^%s*%%") then
+            return "matlab"
+        end
+
+        if line:find("^%s*%(%*") then
+            return "mma"
+        end
+
+        if util.match_vim_regex(line, [[\c^\s*\(\(type\|var\)\>\|--\)]]) then
+            return "murphi"
+        end
+    end
+
+    if saw_comment then
+        -- We didn't see anything definitive, but this looks like either Objective C
+        -- or Murphi based on the comment leader. Assume the former as it is more
+        -- common.
+        return "objc"
+    end
+
+    -- Default is Matlab
+    return "matlab"
+end
+
+--- Diffrentiate between nroff and objective cpp
+--- Taken from vim.filetype.detect
+---
+--- @return string the Detected filetype
+function M.mm()
+    for _, line in ipairs(util.getlines(0, 20)) do
+        if
+            util.match_vim_regex(
+                line,
+                [[\c^\s*\(#\s*\(include\|import\)\>\|@import\>\|/\*\)]]
+            )
+        then
+            return "objcpp"
+        end
+    end
+
+    return "nroff"
+end
+
+--- Diffrentiate between make and mmix files
+--- Taken from vim.filetype.detect
+---
+--- @return string the Detected filetype
+function M.mms()
+    for _, line in ipairs(util.getlines(0, 20)) do
+        if util.findany(line, { "^%s*%%", "^%s*//", "^%*" }) then
+            return "mmix"
+        end
+
+        if line:find("^%s*#") then
+            return "make"
+        end
+    end
+
+    return "mmix"
+end
+
+local pascal_comments = { "^%s*{", "^%s*%(%*", "^%s*//" }
+local pascal_keywords =
+    [[\c^\s*\%(program\|unit\|library\|uses\|begin\|procedure\|function\|const\|type\|var\)\>]]
+
+--- Diffrentiate between pascal and puppet filetypes
+--- Taken from vim.filetype.detect
+---
+--- @return string the Detected filetype
+function M.pp()
+    if vim.g.filetype_pp then
+        return vim.g.filetype_pp
+    end
+
+    local line = util.get_next_nonblank_line()
+    if
+        util.findany(line, pascal_comments)
+        or util.match_vim_regex(line, pascal_keywords)
+    then
+        return "pascal"
+    end
+
+    return "puppet"
+end
+
+--- Diffrentiate between prolog and perl filetypes
+--- Taken from vim.filetype.detect
+---
+--- @return string the Detected filetype
+function M.pl()
+    if vim.g.filetype_pl then
+        return vim.g.filetype_pl
+    end
+
+    -- Recognize Prolog by specific text in the first non-empty line;
+    -- require a blank after the '%' because Perl uses "%list" and "%translate"
+    local line = util.get_next_nonblank_line()
+    if
+        line and line:find(":%-")
+        or util.match_vim_regex(line, [[\c\<prolog\>]])
+        or util.findany(line, { "^%s*%%+%s", "^%s*%%+$", "^%s*/%*" })
+    then
+        return "prolog"
+    end
+
+    return "perl"
+end
+
+--- Diffrentiate between different inc filetypes
+--- Taken from vim.filetype.detect
+---
+--- @return string the Detected filetype
+function M.inc()
+    if vim.g.filetype_inc then
+        return vim.g.filetype_inc
+    end
+
+    local lines = util.getlines_as_string(0, 3, " ")
+    if lines:lower():find("perlscript") then
+        return "aspperl"
+    end
+
+    if lines:find("<%%") then
+        return "aspvbs"
+    end
+
+    if lines:find("<%?") then
+        return "php"
+    end
+
+    -- Pascal supports // comments but they're vary rarely used for file
+    -- headers so assume POV-Ray
+    if
+        util.findany(lines, { "^%s{", "^%s%(%*" })
+        or util.match_vim_regex(lines, pascal_keywords)
+    then
+        return "pascal"
+    end
+
+    if
+        util.findany(lines, {
+            "^%s*inherit ",
+            "^%s*require ",
+            "^%s*%u[%w_:${}]*%s+%??[?:+]?= ",
+        })
+    then
+        return "bitbake"
+    end
+
+    local syntax = M.asm_syntax()
+    if syntax == vim.g.asmsyntax or syntax == "asm" then
+        return "pov" -- If the default asm syntax is found
+    end
+
+    vim.b.asmsyntax = syntax
+    return syntax
+end
+
+--- This function checks for an assembly comment in the first ten lines.
+--- If not found, assume Progress.
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.progress_asm()
+    if vim.g.filetype_i then
+        return vim.g.filetype_i
+    end
+
+    for _, line in ipairs(util.getlines(0, 10)) do
+        if line:find("^%s*;") or line:find("^/%*") then
+            return M.asm()
+        end
+
+        if not line:find("^%s*$") or line:find("^/%*") then
+            -- Not an empty line: doesn't look like valid assembly code
+            -- or it looks like a Progress /* comment.
+            break
+        end
+    end
+
+    return "progress"
+end
+
+--- This function checks cweb files for hints on whether they are progress files or not
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.progress_cweb()
+    if vim.g.filetype_w then
+        return vim.g.filetype_w
+    else
+        if
+            util.getlines():lower():find("^&analyze")
+            or util.getlines(2):lower():find("^&global%-define")
+        then
+            return "progress"
+        end
+
+        return "cweb"
+    end
+end
+
+--- This function checks for valid Pascal syntax in the first 10 lines.
+--- Look for either an opening comment or a program start.
+--- If not found, assume Progress.
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.progress_pascal()
+    if vim.g.filetype_p then
+        return vim.g.filetype_p
+    end
+
+    for _, line in ipairs(util.getlines(0, 10)) do
+        if
+            util.findany(line, pascal_comments)
+            or util.match_vim_regex(line, pascal_keywords)
+        then
+            return "pascal"
+        end
+
+        if not line:find("^%s*$") or line:find("^/%*") then
+            -- Not an empty line: Doesn't look like valid Pascal code.
+            -- Or it looks like a Progress /* comment
+            break
+        end
+    end
+
+    return "progress"
+end
+
+--- Checks if this is a bindzone file or not
+--- Taken from vim.filetype.detect
+---
+--- @return string|nil The detected filetype
+function M.bindzone()
+    local lines = util.getlines_as_string(0, 4)
+    if
+        util.findany(
+            lines,
+            { "^; <<>> DiG [0-9%.]+.* <<>>", "%$ORIGIN", "%$TTL", "IN%s+SOA" }
+        )
+    then
+        return "bindzone"
+    end
+end
+
+local udev_rules_pattern = '^%s*udev_rules%s*=%s*"([%^"]+)/*".*'
+
+--- This function looks at the file path rather the contents of the rule file.
+--- if the path is in any of the predifined udev rules path or is in one off
+--- the paths defined in '/etc/udev/udev.conf', then it is not a udevrules file
+--- Taken from vim.filetype.detect
+---
+--- @param path string The absolute path the file is at
+--- @return string The detected filetype
+function M.rules(path)
+    path = path:lower()
+    if
+        util.findany(path, {
+            "/etc/udev/.*%.rules$",
+            "/etc/udev/rules%.d/.*$.rules$",
+            "/usr/lib/udev/.*%.rules$",
+            "/usr/lib/udev/rules%.d/.*%.rules$",
+            "/lib/udev/.*%.rules$",
+            "/lib/udev/rules%.d/.*%.rules$",
+        })
+    then
+        return "udevrules"
+    end
+
+    if path:find("^/etc/ufw/") then
+        -- Better than hog
+        return "conf"
+    end
+
+    if
+        util.findany(
+            path,
+            { "^/etc/polkit%-1/rules%.d", "/usr/share/polkit%-1/rules%.d" }
+        )
+    then
+        return "javascript"
+    end
+
+    local ok, config_lines = pcall(vim.fn.readfile, "/etc/udev/udev.conf")
+    if not ok then
+        return "hog"
+    end
+
+    local dir = vim.fs.dirname(path)
+    for _, line in ipairs(config_lines) do
+        local match = line:match(udev_rules_pattern)
+        if not match then
+            goto continue
+        end
+
+        local udev_rules = line:gsub(udev_rules_pattern, match, 1)
+        if dir == udev_rules then
+            return "udevrules"
+        end
+
+        ::continue::
+    end
+
+    return "hog"
+end
+
+--- Diffrentiate between racc and yacc
+--- Taken from vim.filetype.detect
+---
+--- @return string|nil The detected filetype
+function M.inp()
+    if util.getline():find("^%*") then
+        return "abaqus"
+    end
+
+    for _, line in ipairs(util.getlines(0, 500)) do
+        if line:lower():find("^header surface data") then
+            return "trasys"
+        end
+    end
+end
+
+--- Diffrentiate between racc and yacc
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.y()
+    for _, line in ipairs(util.getlines(0, 100)) do
+        if line:find("^%s*%%") then
+            return "yacc"
+        end
+
+        if
+            util.match_vim_regex(line, [[\c^\s*\(#\|class\>\)]])
+            and not line:lower():find("^%s*#%s*include")
+        then
+            return "racc"
+        end
+    end
+
+    return "yacc"
+end
+
+--- Rely on the file to start with a comment.
+--- MS message text files use ';', Sendmail files use '#' or 'dnl'
+--- Taken from vim.filetype.detect
+---
+--- @return string The detected filetype
+function M.mc()
+    for _, line in ipairs(util.getlines(0, 20)) do
+        if util.findany(line, { "^%s*#", "^s*dnl" }) then
+            return "m4"
+        end
+
+        if line:find("^#s*;") then
+            return "msmessages"
+        end
+    end
+
+    return "m4"
 end
 
 return M
