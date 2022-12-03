@@ -505,6 +505,7 @@ return {
     ["sdc"] = "sdc",
     ["sdl"] = "sdl",
     ["sed"] = "sed",
+    ["service"] = "systemd",
     ["sexp"] = "sexplib",
     ["si"] = "cuplsim",
     ["sieve"] = "sieve",
