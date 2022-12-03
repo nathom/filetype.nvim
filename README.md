@@ -84,12 +84,15 @@ require("filetype").setup({
                 -- Remove annoying indent jumping
                 vim.bo.cinoptions = vim.bo.cinoptions .. "L0"
             end,
-            ["pdf"] = function()
+
+            -- The functions recieves an table table with following fields:
+            -- args table: * file_path: The absolute path of the file
+            --             * file_name: The name of the file (including extension)
+            --             * file_ext:  The extention at the end of the file
+            ["pdf"] = function(args)
                 vim.bo.filetype = "pdf"
                 -- Open in PDF viewer (Skim.app) automatically
-                vim.fn.jobstart(
-                    "open -a skim " .. '"' .. vim.fn.expand("%") .. '"'
-                )
+                vim.fn.jobstart([[open -a skim "]] .. args.file_path .. '"')
             end,
         },
         function_literal = {
