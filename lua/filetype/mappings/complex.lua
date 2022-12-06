@@ -103,6 +103,7 @@ M.complex = {
     ["named.*%.conf"] = "named",
     ["rndc.*%.conf"] = "named",
     ["rndc.*%.key"] = "named",
+    [".*/tex/context/.*/.*%.tex"] = "context",
 }
 
 -- These require a special set_ft function
@@ -151,9 +152,12 @@ M.star_sets = {
     ["[rR]akefile.*"] = [[ruby]],
     ["reportbug-.*"] = [[mail]],
     [".*/etc/modprobe%..*"] = [[modconf]],
-    ["%.mutt{ng,}rc.*"] = [[muttrc]],
-    [".*/%.mutt{ng,}/mutt{ng,}rc.*"] = [[muttrc]],
-    ["mutt{ng,}rc.*,Mutt{ng,}rc.*"] = [[muttrc]],
+    ["%.muttrc.*"] = [[muttrc]],
+    ["%.muttngrc.*"] = [[muttrc]],
+    [".*/%.mutt/mutt.*rc.*"] = [[muttrc]],
+    [".*/%.muttng/mutt.*rc.*"] = [[muttrc]],
+    ["[mM]uttrc.*"] = [[muttrc]],
+    ["[mM]uttngrc.*"] = [[muttrc]],
     ["%.neomuttrc.*"] = [[neomuttrc]],
     [".*/%.neomutt/neomuttrc.*"] = [[neomuttrc]],
     ["neomuttrc.*"] = [[neomuttrc]],

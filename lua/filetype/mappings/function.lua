@@ -1,85 +1,80 @@
-local M = {}
+local util = require("filetype.util")
+local detect = require("filetype.detect")
 
-local function getlines(i, j)
-    return table.concat(
-        vim.api.nvim_buf_get_lines(0, i - 1, j or i, true),
-        "\n"
-    )
-end
+local M = {}
 
 M.extensions = {
     ["ms"] = function()
-        vim.cmd([[if !dist#ft#FTnroff() | setf xmath | endif]])
+        return detect.nroff() or "xmath"
     end,
     ["xpm"] = function()
-        if getlines(1):find("XPM2") then
+        if util.getline():find("XPM2") then
             return "xpm2"
         else
             return "xpm"
         end
     end,
     ["module"] = function()
-        if getlines(1):find("%<%?php") then
+        if util.getline():find("%<%?php") then
             return "php"
         else
             return "virata"
         end
     end,
     ["pkg"] = function()
-        if getlines(1):find("%<%?php") then
+        if util.getline():find("%<%?php") then
             return "php"
         else
             return "virata"
         end
     end,
     ["hw"] = function()
-        if getlines(1):find("%<%?php") then
+        if util.getline():find("%<%?php") then
             return "php"
         else
             return "virata"
         end
     end,
     ["ts"] = function()
-        if getlines(1):find("<%?xml") then
+        if util.getline():find("<%?xml") then
             return "xml"
         else
             return "typescript"
         end
     end,
     ["ttl"] = function()
-        if getlines(1):find("^@?(prefix|base)") then
+        if util.getline():find("^@?(prefix|base)") then
             return "stata"
         end
     end,
-    ["t"] = function()
-        -- Don't know how to translate this :(
-        vim.cmd(
-            [[if !dist#ft#FTnroff() && !dist#ft#FTperl() | setf tads | endif]]
-        )
+    ["t"] = function(args)
+        return detect.nroff()
+            or detect.perl(args.file_path, args.file_ext)
+            or "tads"
     end,
     ["class"] = function()
         -- Decimal escape sequence
         -- The original was "^\xca\xfe\xba\xbe"
-        if getlines(1):find("^\x202\x254\x186\x190") then
+        if util.getline():find("^\x202\x254\x186\x190") then
             return "stata"
         end
     end,
     ["smi"] = function()
-        if getlines(1):find("smil") then
+        if util.getline():find("smil") then
             return "smil"
         else
             return "mib"
         end
     end,
     ["smil"] = function()
-        if getlines(1):find("<?%s*xml.*?>") then
+        if util.getline():find("<?%s*xml.*?>") then
             return "xml"
         else
             return "smil"
         end
     end,
     ["cls"] = function()
-        local first_line = getlines(1)
+        local first_line = util.getline()
         if first_line:find("^%%") then
             return "tex"
         elseif first_line:sub(1, 1) == "#" and first_line:find("rexx") then
@@ -89,50 +84,26 @@ M.extensions = {
         end
     end,
     ["install"] = function()
-        if getlines(1):find("%<%?php") then
+        if util.getline():find("%<%?php") then
             return "php"
         else
-            vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+            return detect.sh({ fallback = "bash" })
         end
     end,
     ["decl"] = function()
-        if getlines(1, 3):find("^%<%!SGML") then
+        if util.getlines_as_string(0, 3, " "):find("^%<%!SGML") then
             return "sgmldecl"
         end
     end,
     ["sgm"] = function()
-        local top_file = getlines(1, 5)
-        if top_file:find("linuxdoc") then
-            return "sgmlnx"
-        elseif
-            getlines(1):find("%<%!DOCTYPE.*DocBook")
-            or getlines(2):find("<!DOCTYPE.*DocBook")
-        then
-            vim.b.docbk_type = "sgml"
-            vim.b.docbk_ver = 4
-            return "docbk"
-        else
-            return "sgml"
-        end
+        return detect.sgml()
     end,
     ["sgml"] = function()
-        local top_file = getlines(1, 5)
-        if top_file:find("linuxdoc") then
-            return "sgmlnx"
-        elseif
-            getlines(1):find("%<%!DOCTYPE.*DocBook")
-            or getlines(2):find("<!DOCTYPE.*DocBook")
-        then
-            vim.b.docbk_type = "sgml"
-            vim.b.docbk_ver = 4
-            return "docbk"
-        else
-            return "sgml"
-        end
+        return detect.sgml()
     end,
     ["reg"] = function()
         if
-            getlines(1):find(
+            util.getline():find(
                 "^REGEDIT[0-9]*%s*$|^Windows Registry Editor Version %d*%.%d*%s*$"
             )
         then
@@ -140,9 +111,9 @@ M.extensions = {
         end
     end,
     ["pm"] = function()
-        if getlines(1):find("XPM2") then
+        if util.getline():find("XPM2") then
             return "xpm2"
-        elseif getlines(1):find("XPM") then
+        elseif util.getline():find("XPM") then
             return "xpm"
         else
             return "perl"
@@ -162,14 +133,14 @@ M.extensions = {
         end
     end,
     ["edn"] = function()
-        if getlines(1):find("^%s*%(%s*edif") then
+        if util.getline():find("^%s*%(%s*edif") then
             return "edif"
         else
             return "clojure"
         end
     end,
     ["rul"] = function()
-        local top_file = getlines(1, 6)
+        local top_file = util.getlines(0, 6)
         if top_file:find("InstallShield") then
             return "ishd"
         else
@@ -184,7 +155,7 @@ M.extensions = {
         end
     end,
     ["cpy"] = function()
-        if getlines(1):find("^%#%#") then
+        if util.getline():find("^%#%#") then
             return "python"
         else
             return "cobol"
@@ -194,7 +165,7 @@ M.extensions = {
     ["asp"] = function()
         if vim.g.filetype_asp ~= nil then
             return vim.g.filetype_asp
-        elseif getlines(1, 3):find("perlscript") then
+        elseif util.getlines_as_string(0, 3, " "):find("perlscript") then
             return "aspperl"
         else
             return "aspvbs"
@@ -208,7 +179,7 @@ M.extensions = {
         end
     end,
     ["cmd"] = function()
-        if getlines(1):find("^%/%*") then
+        if util.getline():find("^%/%*") then
             return "rexx"
         else
             return "dosbatch"
@@ -229,205 +200,212 @@ M.extensions = {
         end
     end,
     ["inp"] = function()
-        vim.cmd([[call dist#ft#Check_inp()]])
+        return detect.inp()
     end,
     ["asm"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["s"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["S"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["a"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["A"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["mac"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["lst"] = function()
-        vim.cmd([[call dist#ft#FTasm()]])
+        return detect.asm()
     end,
     ["bas"] = function()
-        vim.cmd([[call dist#ft#FTVB("basic")]])
+        return detect.vbasic()
     end,
     ["btm"] = function()
-        vim.cmd([[call dist#ft#FTbtm()]])
+        if
+            vim.fn.exists("g:dosbatch_syntax_for_btm") == 1
+            and vim.g.dosbatch_syntax_for_btm ~= 0
+        then
+            return "dosbatch"
+        end
+
+        return "btm"
     end,
     ["db"] = function()
-        vim.cmd([[call dist#ft#BindzoneCheck('')]])
+        return detect.bindzone()
     end,
     ["c"] = function()
-        vim.cmd([[call dist#ft#FTlpc()]])
+        return detect.lpc()
     end,
     ["h"] = function()
-        vim.cmd([[call dist#ft#FTheader()]])
+        return detect.header()
     end,
     ["ch"] = function()
-        vim.cmd([[call dist#ft#FTchange()]])
-    end,
-    ["ent"] = function()
-        vim.cmd([[call dist#ft#FTent()]])
+        return detect.change()
     end,
     ["ex"] = function()
-        vim.cmd([[call dist#ft#ExCheck()]])
+        return detect.elixir_check()
     end,
     ["eu"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["ew"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["exu"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["exw"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EU"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EW"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EX"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EXU"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
+        return detect.euphoria_check()
     end,
     ["EXW"] = function()
-        vim.cmd([[call dist#ft#EuphoriaCheck()]])
-    end,
-    ["d"] = function()
-        vim.cmd([[call dist#ft#DtraceCheck()]])
-    end,
-    ["com"] = function()
-        vim.cmd([[call dist#ft#BindzoneCheck('dcl')]])
+        return detect.euphoria_check()
     end,
     ["e"] = function()
-        vim.cmd([[call dist#ft#FTe()]])
+        return detect.eiffel_check()
     end,
     ["E"] = function()
-        vim.cmd([[call dist#ft#FTe()]])
+        return detect.eiffel_check()
+    end,
+    ["ent"] = function()
+        return detect.eiffel_check()
+    end,
+    ["d"] = function()
+        return detect.dtrace()
+    end,
+    ["com"] = function()
+        return detect.bindzone() or "dcl"
     end,
     ["html"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["htm"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["shtml"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["stm"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["idl"] = function()
-        vim.cmd([[call dist#ft#FTidl()]])
+        return detect.idl()
     end,
     ["pro"] = function()
-        vim.cmd([[call dist#ft#ProtoCheck('idlang')]])
+        return detect.proto() or "idlang"
     end,
     ["m"] = function()
-        vim.cmd([[call dist#ft#FTm()]])
+        return detect.m()
+    end,
+    ["mm"] = function()
+        return detect.mm()
     end,
     ["mms"] = function()
-        vim.cmd([[call dist#ft#FTmms()]])
-    end,
-    ["*.mm"] = function()
-        vim.cmd([[call dist#ft#FTmm()]])
+        return detect.mms()
     end,
     ["pp"] = function()
-        vim.cmd([[call dist#ft#FTpp()]])
+        return detect.pp()
     end,
     ["pl"] = function()
-        vim.cmd([[call dist#ft#FTpl()]])
+        return detect.pl()
     end,
     ["PL"] = function()
-        vim.cmd([[call dist#ft#FTpl()]])
+        return detect.pl()
     end,
     ["inc"] = function()
-        vim.cmd([[call dist#ft#FTinc()]])
+        return detect.inc()
     end,
     ["w"] = function()
-        vim.cmd([[call dist#ft#FTprogress_cweb()]])
+        return detect.progress_cweb()
     end,
     ["i"] = function()
-        vim.cmd([[call dist#ft#FTprogress_asm()]])
+        return detect.progress_asm()
     end,
     ["p"] = function()
-        vim.cmd([[call dist#ft#FTprogress_pascal()]])
+        return detect.progress_pascal()
     end,
     ["r"] = function()
-        vim.cmd([[call dist#ft#FTr()]])
+        return detect.r()
     end,
     ["R"] = function()
-        vim.cmd([[call dist#ft#FTr()]])
+        return detect.r()
     end,
     ["mc"] = function()
-        vim.cmd([[call dist#ft#McSetf()]])
+        return detect.mc()
     end,
     ["ebuild"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["bash"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["eclass"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["ksh"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("ksh")]])
+        return detect.sh({ fallback = "ksh" })
     end,
     ["etc/profile"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH(getline(1))]])
+        return detect.sh({ fallback = "sh", force_shebang_check = true })
     end,
     ["sh"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH(getline(1))]])
+        return detect.sh({ fallback = "sh", force_shebang_check = true })
     end,
     ["env"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH(getline(1))]])
+        return detect.sh({ fallback = "sh", force_shebang_check = true })
     end,
     ["tcsh"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
+        return detect.sh({ fallback = "tcsh" })
     end,
     ["csh"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
-    ["rules"] = function()
-        vim.cmd([[call dist#ft#FTRules()]])
+    ["rules"] = function(args)
+        return detect.rules(args.file_path)
     end,
     ["sql"] = function()
-        vim.cmd([[call dist#ft#SQL()]])
+        return detect.sql()
     end,
-    ["tex"] = function()
-        vim.cmd([[call dist#ft#FTtex()]])
+    ["tex"] = function(args)
+        return detect.tex(args.file_path)
     end,
     ["frm"] = function()
-        vim.cmd([[call dist#ft#FTVB("form")]])
+        return detect.vbasic_form()
     end,
     ["xml"] = function()
-        vim.cmd([[call dist#ft#FTxml()]])
+        return detect.xml()
     end,
     ["y"] = function()
-        vim.cmd([[call dist#ft#FTy()]])
+        return detect.y()
     end,
     ["dtml"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["pt"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["cpt"] = function()
-        vim.cmd([[call dist#ft#FThtml()]])
+        return detect.html()
     end,
     ["zsql"] = function()
-        vim.cmd([[call dist#ft#SQL()]])
+        return detect.sql()
     end,
 }
 M.literal = {
@@ -440,14 +418,14 @@ M.literal = {
         return "xf86conf"
     end,
     ["XF86Config"] = function()
-        if getlines(1):find("XConfigurator") then
+        if util.getline():find("XConfigurator") then
             vim.b.xf86conf_xfree86_version = 3
         end
         return "xf86conf"
     end,
     ["INDEX"] = function()
         if
-            getlines(1):find(
+            util.getline():find(
                 "^%s*(distribution|installed_software|root|bundle|product)%s*$"
             )
         then
@@ -456,7 +434,7 @@ M.literal = {
     end,
     ["INFO"] = function()
         if
-            getlines(1):find(
+            util.getline():find(
                 "^%s*(distribution|installed_software|root|bundle|product)%s*$"
             )
         then
@@ -464,68 +442,68 @@ M.literal = {
         end
     end,
     ["control"] = function()
-        if getlines(1):find("^Source%:") then
+        if util.getline():find("^Source%:") then
             return "debcontrol"
         end
     end,
     ["NEWS"] = function()
-        if getlines(1):find("%; urgency%=") then
+        if util.getline():find("%; urgency%=") then
             return "debchangelog"
         end
     end,
     ["indent.pro"] = function()
-        vim.cmd([[call dist#ft#ProtoCheck('indent')]])
+        return detect.proto() or "indent"
     end,
     [".bashrc"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["bashrc"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["bash.bashrc"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["PKGBUILD"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["APKBUILD"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     [".kshrc"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("ksh")]])
+        return detect.sh({ fallback = "ksh" })
     end,
     [".profile"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH(getline(1))]])
+        return detect.sh({ fallback = "sh", force_shebang_check = true })
     end,
     [".tcshrc"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
+        return detect.sh({ fallback = "tcsh" })
     end,
     ["tcsh.tcshrc"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
+        return detect.sh({ fallback = "tcsh" })
     end,
     ["tcsh.login"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
+        return detect.sh({ fallback = "tcsh" })
     end,
     [".login"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     [".cshrc"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["csh.cshrc"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["csh.login"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["csh.logout"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     [".alias"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     [".d"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
 }
 
@@ -543,54 +521,48 @@ M.complex = {
         return "ptcap"
     end,
     ["[cC]hange[lL]og"] = function()
-        if getlines(1):find("%; urgency%=") then
+        if util.getline():find("%; urgency%=") then
             return "debchangelog"
         else
             return "changelog"
         end
     end,
     ["%.bashrc.*"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["%.bash[_-]profile"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["%.bash[_-]logout"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["%.bash[_-]aliases"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["%.bash%-fc[_-]"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["PKGBUILD.*"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["APKBUILD.*"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("bash")]])
+        return detect.sh({ fallback = "bash" })
     end,
     ["%.kshrc.*"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH("ksh")]])
+        return detect.sh({ fallback = "ksh" })
     end,
     ["%.profile.*"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeSH(getline(1))]])
+        return detect.sh({ fallback = "sh", force_shebang_check = true })
     end,
     ["%.tcshrc.*"] = function()
-        vim.cmd([[call dist#ft#SetFileTypeShell("tcsh")]])
+        return detect.sh({ fallback = "tcsh" })
     end,
     ["%.login.*"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
     ["%.cshrc.*"] = function()
-        vim.cmd([[call dist#ft#CSH()]])
+        return detect.csh()
     end,
-}
-
-M.shebang = {
-    ["bash"] = "sh",
-    ["node"] = "javascript",
-    ["python3"] = "python",
 }
 
 return M
