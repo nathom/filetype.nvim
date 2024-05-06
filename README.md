@@ -1,3 +1,5 @@
+> This plugin is no longer needed as the optimization has been [merged into Neovim core](https://github.com/neovim/neovim/pull/16600). It is only here for archival purposes.
+
 # filetype.nvim
 
 Easily speed up your neovim startup time!
